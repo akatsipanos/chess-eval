@@ -136,7 +136,7 @@ def main():
                             nn.Softmax())
     
 
-    optimizer = torch.optim.SGD(model.parameters(), lr=args['lr'], momentum=0.9)
+    optimizer = torch.optim.SGD(model.parameters(), lr=args['lr'])
     criterion_train = torch.nn.CrossEntropyLoss()
     criterion_test = torch.nn.CrossEntropyLoss(reduction='sum')
     if args['scheduler'] == 'exponential':
