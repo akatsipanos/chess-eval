@@ -96,7 +96,7 @@ def predict():
 
 
     # Return the prediction result to the user
-    return render_template('results.html', result=result, result_str=result_str, svg_image=image)
+    return render_template('results2.html', result=result, result_str=result_str, svg_image=image)
 
 if __name__ == '__main__':
     # waitress.serve(app, port=5000, host='localhost')

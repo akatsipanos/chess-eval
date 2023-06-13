@@ -127,12 +127,12 @@ def main():
                             nn.BatchNorm1d(num_features=output_layer1),
                             nn.Dropout(0.5),
 
-                            nn.Linear(output_layer1,output_layer2),
-                            nn.ReLU(),
-                            nn.BatchNorm1d(num_features=output_layer2),
-                            nn.Dropout(0.5),
+                            # nn.Linear(output_layer1,output_layer2),
+                            # nn.ReLU(),
+                            # nn.BatchNorm1d(num_features=output_layer2),
+                            # nn.Dropout(0.5),
 
-                            nn.Linear(output_layer2,3),
+                            nn.Linear(output_layer1,3),
                             nn.Softmax(dim = 1))
     
 
@@ -152,10 +152,10 @@ def main():
 
     H = {'train_loss':[], 'val_loss':[], 'train_accuracy':[], 'val_accuracy':[]}
     for epoch in range(1, args['epochs'] + 1):
+            print(f'Epoch: {epoch}')
             train_loss, train_accuracy = train(args, model, device, X_train_dataloader, y_train_dataloader, optimizer, criterion_train, criterion_test, epoch)
             val_loss, val_accuracy = validate(model, device, X_val_dataloader, y_val_dataloader, criterion_test)
             
-            print(f'Epoch: {epoch}')
 
             H['train_loss'].append(train_loss)
             H['train_accuracy'].append(train_accuracy)
