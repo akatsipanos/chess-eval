@@ -133,7 +133,7 @@ def main():
                             nn.Dropout(0.5),
 
                             nn.Linear(output_layer2,3),
-                            nn.Softmax())
+                            nn.Softmax(dim = 1))
     
 
     optimizer = torch.optim.SGD(model.parameters(), lr=args['lr'])

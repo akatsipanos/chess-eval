@@ -6,8 +6,24 @@
 <body>
     <h1>Enter Data</h1>
     <form action="/predict" method="POST">
-        <label for="input_data">Input Data:</label><br>
-        <input type="text" id="input_data" name="input_data"><br><br>
+        <label for="fen_number">FEN Number:</label><br>
+        <input type="text" id="fen_number" name="fen_number"><br><br>
+
+        <label for="white_time">Time Remaining for White:</label><br>
+        <input type="text" id="white_time" name="white_time"><br><br>
+
+        <label for="black_time">Time Remaining for Black:</label><br>
+        <input type="text" id="black_time" name="black_time"><br><br>
+
+        <label for="white_rating">White Rating:</label><br>
+        <input type="text" id="white_rating" name="white_rating"><br><br>
+
+        <label for="black_rating">Black Rating:</label><br>
+        <input type="text" id="black_rating" name="black_rating"><br><br>
+
+        <label for="turn">White or Black Turn?:</label><br>
+        <input type="text" id="turn" name="turn"><br><br>
+
         <input type="submit" value="Predict">
     </form>
 </body>
