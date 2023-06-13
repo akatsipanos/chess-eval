@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import argparse
 from torch.utils.data import DataLoader
+from sklearn.utils import class_weight
 
 def prep_data(path):
     import json
@@ -118,21 +119,23 @@ def main():
     X_train,y_train = prep_data('data/train.npy')
     X_val, y_val = prep_data('data/val.npy')
     
+
+    
     input_size = len(X_train[0,:])
-    output_layer1= 32
-    output_layer2 = 16
+    output_layer1= 128
+    output_layer2 = 64
 
     model = nn.Sequential(nn.Linear(input_size,output_layer1),
                             nn.ReLU(),
                             nn.BatchNorm1d(num_features=output_layer1),
                             nn.Dropout(0.5),
 
-                            # nn.Linear(output_layer1,output_layer2),
-                            # nn.ReLU(),
-                            # nn.BatchNorm1d(num_features=output_layer2),
-                            # nn.Dropout(0.5),
+                            nn.Linear(output_layer1,output_layer2),
+                            nn.ReLU(),
+                            nn.BatchNorm1d(num_features=output_layer2),
+                            nn.Dropout(0.5),
 
-                            nn.Linear(output_layer1,3),
+                            nn.Linear(output_layer2,3),
                             nn.Softmax(dim = 1))
     
 
