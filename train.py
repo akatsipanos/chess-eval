@@ -16,10 +16,10 @@ def prep_data(path):
 
     if 'train' in path:
         ratings_json = {'min_rating':df[:,-3:-1].min(), 'max_rating':df[:,-3:-1].max()}
-        with open('scaling.json','w') as f:
+        with open('models/scaling.json','w') as f:
             json.dump(ratings_json,f)
 
-    with open('scaling.json', 'r') as f:
+    with open('models/scaling.json', 'r') as f:
         ratings_json = json.load(f)
 
     df[:,-3:-1] = (df[:,-3:-1] - ratings_json['min_rating']) / (ratings_json['max_rating'] - ratings_json['min_rating'])
@@ -175,10 +175,10 @@ def main():
                 plt.xlabel('Epoch #')
                 plt.ylabel('Loss/Accuracy')
                 plt.legend()
-                plt.savefig(f'epochs_{args["epochs"]}__lr_{args["lr"]}__gamma_{args["gamma"]}__scheduler_{args["scheduler"]}.png')
+                plt.savefig(f'figures/epochs_{args["epochs"]}__lr_{args["lr"]}__gamma_{args["gamma"]}__scheduler_{args["scheduler"]}.png')
             
     if args['save_model']:
-        torch.save(model.state_dict(), "chess_model.pt")
+        torch.save(model.state_dict(), "models/chess_model.pt")
 
 if __name__ =='__main__':
     main()

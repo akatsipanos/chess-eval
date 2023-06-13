@@ -18,8 +18,8 @@ def create_input(input_data):
     sf.set_fen_position(input_data['fen_number'])
 
     features = [convert_fen_to_matrix(input_data['fen_number']),
-                              int(input_data['white_time'])/total_time, 
-                              int(input_data['black_time'])/total_time, 
+                              float(input_data['white_time'])/total_time, 
+                              float(input_data['black_time'])/total_time, 
                               sf.get_evaluation()['value']/100, 
                               turn_map[input_data['turn'].lower()],
                               int(input_data['white_rating']),
@@ -86,7 +86,8 @@ def predict():
 
     result_map = {'0':'White win','1':'Draw','2':'Black win'} 
     result = result_map[str(pred)]
-    result_str = f'{result} - {round(y_pred.max().item()*100, 2)}%'
+    result_str =f'White win - {y_pred[0][0].item()*100:.2f}% Draw - {y_pred[0][1].item()*100:.2f}% Black win - {y_pred[0][2].item()*100:.2f}%'
+
     print(result_str)
 
     board = chess.Board()
@@ -95,7 +96,7 @@ def predict():
 
 
     # Return the prediction result to the user
-    return render_template('results.html', result=result_str, svg_image=image)
+    return render_template('results.html', result=result, result_str=result_str, svg_image=image)
 
 if __name__ == '__main__':
     # waitress.serve(app, port=5000, host='localhost')
