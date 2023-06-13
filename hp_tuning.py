@@ -129,7 +129,6 @@ def main():
 
             if params['scheduler'] == 'exponential':
                 scheduler = lr_scheduler.ExponentialLR(optimizer, gamma = params['gamma'])
-                del params['step_size']
             else:
                 scheduler = lr_scheduler.StepLR(optimizer, step_size=params['step_size'], gamma = params['gamma'])
 
@@ -167,7 +166,7 @@ def main():
             ax.set_ylabel('Loss/Accuracy')
             ax.legend()
 
-            mlflow.log_figure(fig, 'Accuracy_Loss_Plot.png')
+            mlflow.log_figure(fig, 'accuracy_loss_plot.png')
             
             mlflow.pytorch.log_model(model,'model')
 

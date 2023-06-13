@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/525813990100363701/3cddd31f24704bfa89249a0ac2661222/artifacts
+end_time: 1686666840588
+entry_point_name: ''
+experiment_id: '525813990100363701'
+lifecycle_stage: active
+run_id: 3cddd31f24704bfa89249a0ac2661222
+run_name: delightful-crab-549
+run_uuid: 3cddd31f24704bfa89249a0ac2661222
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686666143353
+status: 3
+tags: []
+user_id: AndrewKatsipanos

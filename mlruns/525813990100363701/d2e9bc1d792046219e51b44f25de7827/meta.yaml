@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/525813990100363701/d2e9bc1d792046219e51b44f25de7827/artifacts
+end_time: 1686658624473
+entry_point_name: ''
+experiment_id: '525813990100363701'
+lifecycle_stage: active
+run_id: d2e9bc1d792046219e51b44f25de7827
+run_name: serious-dog-840
+run_uuid: d2e9bc1d792046219e51b44f25de7827
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686658516698
+status: 3
+tags: []
+user_id: AndrewKatsipanos

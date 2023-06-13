@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/525813990100363701/3b653430b9f3474ea2c3e4463fbddf20/artifacts
+end_time: 1686658052966
+entry_point_name: ''
+experiment_id: '525813990100363701'
+lifecycle_stage: active
+run_id: 3b653430b9f3474ea2c3e4463fbddf20
+run_name: amazing-smelt-312
+run_uuid: 3b653430b9f3474ea2c3e4463fbddf20
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686657910962
+status: 3
+tags: []
+user_id: AndrewKatsipanos

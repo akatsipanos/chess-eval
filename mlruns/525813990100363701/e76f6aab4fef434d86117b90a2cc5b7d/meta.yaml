@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/525813990100363701/e76f6aab4fef434d86117b90a2cc5b7d/artifacts
+end_time: 1686661023294
+entry_point_name: ''
+experiment_id: '525813990100363701'
+lifecycle_stage: active
+run_id: e76f6aab4fef434d86117b90a2cc5b7d
+run_name: shivering-mole-684
+run_uuid: e76f6aab4fef434d86117b90a2cc5b7d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686660635074
+status: 3
+tags: []
+user_id: AndrewKatsipanos

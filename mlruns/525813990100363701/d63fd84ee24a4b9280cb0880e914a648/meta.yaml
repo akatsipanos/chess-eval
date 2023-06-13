@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/525813990100363701/d63fd84ee24a4b9280cb0880e914a648/artifacts
+end_time: 1686657443267
+entry_point_name: ''
+experiment_id: '525813990100363701'
+lifecycle_stage: active
+run_id: d63fd84ee24a4b9280cb0880e914a648
+run_name: respected-ox-488
+run_uuid: d63fd84ee24a4b9280cb0880e914a648
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686657076540
+status: 3
+tags: []
+user_id: AndrewKatsipanos

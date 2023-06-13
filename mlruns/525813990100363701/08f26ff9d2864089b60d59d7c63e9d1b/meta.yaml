@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/525813990100363701/08f26ff9d2864089b60d59d7c63e9d1b/artifacts
+end_time: 1686663767084
+entry_point_name: ''
+experiment_id: '525813990100363701'
+lifecycle_stage: active
+run_id: 08f26ff9d2864089b60d59d7c63e9d1b
+run_name: monumental-dove-415
+run_uuid: 08f26ff9d2864089b60d59d7c63e9d1b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686663670114
+status: 3
+tags: []
+user_id: AndrewKatsipanos

@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/525813990100363701/b61609a84d264624bc0227e8b5f7f908/artifacts
+end_time: 1686656299744
+entry_point_name: ''
+experiment_id: '525813990100363701'
+lifecycle_stage: active
+run_id: b61609a84d264624bc0227e8b5f7f908
+run_name: angry-calf-683
+run_uuid: b61609a84d264624bc0227e8b5f7f908
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686655617922
+status: 3
+tags: []
+user_id: AndrewKatsipanos

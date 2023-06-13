@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/525813990100363701/ce8bd94f56f5424a8d8080a89bae8e70/artifacts
+end_time: 1686663351685
+entry_point_name: ''
+experiment_id: '525813990100363701'
+lifecycle_stage: active
+run_id: ce8bd94f56f5424a8d8080a89bae8e70
+run_name: peaceful-ox-797
+run_uuid: ce8bd94f56f5424a8d8080a89bae8e70
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686663238159
+status: 3
+tags: []
+user_id: AndrewKatsipanos
