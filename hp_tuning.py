@@ -107,7 +107,7 @@ def main():
                             nn.Dropout(0.5),
 
                             nn.Linear(output_layer2,3),
-                            nn.Softmax())
+                            nn.Softmax(dim=1))
     def objective(trial):
         with mlflow.start_run():
             params = {'epochs':trial.suggest_categorical('epochs', [10,50,100]),
@@ -128,10 +128,10 @@ def main():
             criterion_test = torch.nn.CrossEntropyLoss(reduction='sum')
 
             if params['scheduler'] == 'exponential':
-                scheduler = lr_scheduler.ExponentialLR(optimizer, gamma = params['gamma'], verbose = True)
+                scheduler = lr_scheduler.ExponentialLR(optimizer, gamma = params['gamma'])
                 del params['step_size']
             else:
-                scheduler = lr_scheduler.StepLR(optimizer, step_size=params['step_size'], gamma = params['gamma'], verbose = True)
+                scheduler = lr_scheduler.StepLR(optimizer, step_size=params['step_size'], gamma = params['gamma'])
 
 
             X_train_dataloader = DataLoader(X_train[:,:], batch_size=params['batch_size'])
@@ -167,18 +167,20 @@ def main():
             ax.set_ylabel('Loss/Accuracy')
             ax.legend()
 
-            mlflow.log_figure(fig, 'Accuracy/Loss Plot')
+            mlflow.log_figure(fig, 'Accuracy_Loss_Plot.png')
+            
+            mlflow.pytorch.log_model(model,'model')
 
         return val_accuracy 
     
-    tracking_uri = r'./'
+    tracking_uri = r'./mlruns'
     mlflow.set_tracking_uri(tracking_uri)
     mlflow.set_experiment('chess_eval')
     
     sampler = optuna.samplers.TPESampler(seed=123)
     study = optuna.create_study(direction='maximize',sampler=sampler)
     # optuna.logging.set_verbosity(optuna.logging.WARNING)
-    study.optimize(objective, n_trials=15)
+    study.optimize(objective, n_trials=50)
     
 
 
