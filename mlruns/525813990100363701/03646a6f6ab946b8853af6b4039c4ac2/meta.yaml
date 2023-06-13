@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/525813990100363701/03646a6f6ab946b8853af6b4039c4ac2/artifacts
+end_time: 1686653323861
+entry_point_name: ''
+experiment_id: '525813990100363701'
+lifecycle_stage: active
+run_id: 03646a6f6ab946b8853af6b4039c4ac2
+run_name: masked-newt-341
+run_uuid: 03646a6f6ab946b8853af6b4039c4ac2
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686652949785
+status: 3
+tags: []
+user_id: AndrewKatsipanos

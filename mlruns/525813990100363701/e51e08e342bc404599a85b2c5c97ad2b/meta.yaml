@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/525813990100363701/e51e08e342bc404599a85b2c5c97ad2b/artifacts
+end_time: 1686668896158
+entry_point_name: ''
+experiment_id: '525813990100363701'
+lifecycle_stage: active
+run_id: e51e08e342bc404599a85b2c5c97ad2b
+run_name: chill-koi-197
+run_uuid: e51e08e342bc404599a85b2c5c97ad2b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686668205860
+status: 3
+tags: []
+user_id: AndrewKatsipanos

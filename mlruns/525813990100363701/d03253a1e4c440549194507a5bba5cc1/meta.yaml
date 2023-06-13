@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/525813990100363701/d03253a1e4c440549194507a5bba5cc1/artifacts
+end_time: 1686654049188
+entry_point_name: ''
+experiment_id: '525813990100363701'
+lifecycle_stage: active
+run_id: d03253a1e4c440549194507a5bba5cc1
+run_name: resilient-snail-89
+run_uuid: d03253a1e4c440549194507a5bba5cc1
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686653977921
+status: 3
+tags: []
+user_id: AndrewKatsipanos

@@ -1,0 +1,16 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/525813990100363701/8620066ec46d4981b58000f0631bda3e/artifacts
+deleted_time: 1686651282538
+end_time: 1686650863814
+entry_point_name: ''
+experiment_id: '525813990100363701'
+lifecycle_stage: deleted
+run_id: 8620066ec46d4981b58000f0631bda3e
+run_name: awesome-finch-89
+run_uuid: 8620066ec46d4981b58000f0631bda3e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686650766064
+status: 4
+tags: []
+user_id: AndrewKatsipanos

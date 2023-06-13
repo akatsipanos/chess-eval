@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/525813990100363701/c9eb2979d65f4f5b856dcf20dede7b60/artifacts
+end_time: 1686669584084
+entry_point_name: ''
+experiment_id: '525813990100363701'
+lifecycle_stage: active
+run_id: c9eb2979d65f4f5b856dcf20dede7b60
+run_name: adventurous-elk-818
+run_uuid: c9eb2979d65f4f5b856dcf20dede7b60
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686668896171
+status: 3
+tags: []
+user_id: AndrewKatsipanos

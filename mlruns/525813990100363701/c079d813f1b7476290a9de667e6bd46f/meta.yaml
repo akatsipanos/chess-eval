@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/525813990100363701/c079d813f1b7476290a9de667e6bd46f/artifacts
+end_time: 1686670109982
+entry_point_name: ''
+experiment_id: '525813990100363701'
+lifecycle_stage: active
+run_id: c079d813f1b7476290a9de667e6bd46f
+run_name: resilient-rat-430
+run_uuid: c079d813f1b7476290a9de667e6bd46f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686669725873
+status: 3
+tags: []
+user_id: AndrewKatsipanos
