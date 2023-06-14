@@ -8,6 +8,7 @@ import numpy as np
 import json
 import chess
 import chess.svg
+from train import Network
 
 def create_input(input_data):
     total_time = 120
@@ -59,18 +60,7 @@ def predict():
     input_size = 70
     output_layer1= 32
     output_layer2 = 16
-    model = nn.Sequential(nn.Linear(input_size,output_layer1),
-                            nn.ReLU(),
-                            nn.BatchNorm1d(num_features=output_layer1),
-                            nn.Dropout(0.5),
-
-                            nn.Linear(output_layer1,output_layer2),
-                            nn.ReLU(),
-                            nn.BatchNorm1d(num_features=output_layer2),
-                            nn.Dropout(0.5),
-
-                            nn.Linear(output_layer2,3),
-                            nn.Softmax(dim = 1))
+    model = Network(input_size=input_size, output_layer1=output_layer1, output_layer2=output_layer2)
     
     model_state_dict = torch.load('models/chess_model.pt')
 
