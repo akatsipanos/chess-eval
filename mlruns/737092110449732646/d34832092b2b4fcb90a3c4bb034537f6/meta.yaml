@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/d34832092b2b4fcb90a3c4bb034537f6/artifacts
+end_time: 1686759009990
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: d34832092b2b4fcb90a3c4bb034537f6
+run_name: sincere-slug-645
+run_uuid: d34832092b2b4fcb90a3c4bb034537f6
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686758344521
+status: 3
+tags: []
+user_id: AndrewKatsipanos

@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/8e160410fb06466e9d0682a18d153e8a/artifacts
+end_time: 1686743139780
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: 8e160410fb06466e9d0682a18d153e8a
+run_name: clean-colt-809
+run_uuid: 8e160410fb06466e9d0682a18d153e8a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686742533649
+status: 3
+tags: []
+user_id: AndrewKatsipanos

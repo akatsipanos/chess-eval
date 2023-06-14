@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/e233449fc33745f5896b409f11259729/artifacts
+end_time: 1686737615554
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: e233449fc33745f5896b409f11259729
+run_name: amazing-gull-549
+run_uuid: e233449fc33745f5896b409f11259729
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686737114957
+status: 3
+tags: []
+user_id: AndrewKatsipanos

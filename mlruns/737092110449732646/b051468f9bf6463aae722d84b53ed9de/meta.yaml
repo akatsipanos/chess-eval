@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/b051468f9bf6463aae722d84b53ed9de/artifacts
+end_time: 1686749355090
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: b051468f9bf6463aae722d84b53ed9de
+run_name: thoughtful-rat-815
+run_uuid: b051468f9bf6463aae722d84b53ed9de
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686748741981
+status: 3
+tags: []
+user_id: AndrewKatsipanos

@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/17c7e7342b4140ac9825e776e136ae6c/artifacts
+end_time: 1686738267751
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: 17c7e7342b4140ac9825e776e136ae6c
+run_name: upset-gnat-348
+run_uuid: 17c7e7342b4140ac9825e776e136ae6c
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686737615566
+status: 3
+tags: []
+user_id: AndrewKatsipanos

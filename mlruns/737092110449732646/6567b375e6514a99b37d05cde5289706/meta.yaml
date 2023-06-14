@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/6567b375e6514a99b37d05cde5289706/artifacts
+end_time: 1686765153566
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: 6567b375e6514a99b37d05cde5289706
+run_name: bouncy-bug-443
+run_uuid: 6567b375e6514a99b37d05cde5289706
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686764587343
+status: 3
+tags: []
+user_id: AndrewKatsipanos

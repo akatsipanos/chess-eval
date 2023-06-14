@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/dcddf3e55c3147689565c84b25286b68/artifacts
+end_time: 1686751178332
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: dcddf3e55c3147689565c84b25286b68
+run_name: ambitious-stoat-772
+run_uuid: dcddf3e55c3147689565c84b25286b68
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686750569136
+status: 3
+tags: []
+user_id: AndrewKatsipanos

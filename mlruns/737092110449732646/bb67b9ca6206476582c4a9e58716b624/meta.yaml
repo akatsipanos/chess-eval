@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/bb67b9ca6206476582c4a9e58716b624/artifacts
+end_time: 1686737114946
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: bb67b9ca6206476582c4a9e58716b624
+run_name: popular-finch-110
+run_uuid: bb67b9ca6206476582c4a9e58716b624
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686736617325
+status: 3
+tags: []
+user_id: AndrewKatsipanos

@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/d3de1fdc5ed842c0a94a17f85c52b32a/artifacts
+end_time: 1686747470778
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: d3de1fdc5ed842c0a94a17f85c52b32a
+run_name: wise-rat-539
+run_uuid: d3de1fdc5ed842c0a94a17f85c52b32a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686746851727
+status: 3
+tags: []
+user_id: AndrewKatsipanos

@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/227e5b414b144b078bcfef717b5d482e/artifacts
+end_time: 1686749965197
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: 227e5b414b144b078bcfef717b5d482e
+run_name: welcoming-trout-853
+run_uuid: 227e5b414b144b078bcfef717b5d482e
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686749355106
+status: 3
+tags: []
+user_id: AndrewKatsipanos

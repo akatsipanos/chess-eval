@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/f4da0629db844c23a4a112213809eeac/artifacts
+end_time: 1686759554146
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: f4da0629db844c23a4a112213809eeac
+run_name: gifted-mouse-495
+run_uuid: f4da0629db844c23a4a112213809eeac
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686759010009
+status: 3
+tags: []
+user_id: AndrewKatsipanos

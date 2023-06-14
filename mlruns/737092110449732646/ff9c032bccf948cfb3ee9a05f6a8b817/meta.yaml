@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/ff9c032bccf948cfb3ee9a05f6a8b817/artifacts
+end_time: 1686756116581
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: ff9c032bccf948cfb3ee9a05f6a8b817
+run_name: vaunted-calf-851
+run_uuid: ff9c032bccf948cfb3ee9a05f6a8b817
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686755529926
+status: 3
+tags: []
+user_id: AndrewKatsipanos

@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/50ed6e30d38940c68d3c8deb575879ed/artifacts
+end_time: 1686748105435
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: 50ed6e30d38940c68d3c8deb575879ed
+run_name: unique-sponge-983
+run_uuid: 50ed6e30d38940c68d3c8deb575879ed
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686747470793
+status: 3
+tags: []
+user_id: AndrewKatsipanos

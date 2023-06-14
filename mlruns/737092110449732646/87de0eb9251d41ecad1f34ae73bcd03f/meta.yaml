@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/87de0eb9251d41ecad1f34ae73bcd03f/artifacts
+end_time: 1686753170518
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: 87de0eb9251d41ecad1f34ae73bcd03f
+run_name: incongruous-croc-342
+run_uuid: 87de0eb9251d41ecad1f34ae73bcd03f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686752578370
+status: 3
+tags: []
+user_id: AndrewKatsipanos

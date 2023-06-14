@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/7d4c8124fdc34c1b9f8c41b28dcf0b6d/artifacts
+end_time: 1686764096113
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: 7d4c8124fdc34c1b9f8c41b28dcf0b6d
+run_name: abundant-cat-632
+run_uuid: 7d4c8124fdc34c1b9f8c41b28dcf0b6d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686763497830
+status: 3
+tags: []
+user_id: AndrewKatsipanos

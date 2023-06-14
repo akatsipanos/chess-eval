@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/870187f9300a4bb89b016811c75629d4/artifacts
+end_time: 1686743746434
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: 870187f9300a4bb89b016811c75629d4
+run_name: adventurous-fly-933
+run_uuid: 870187f9300a4bb89b016811c75629d4
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686743139796
+status: 3
+tags: []
+user_id: AndrewKatsipanos

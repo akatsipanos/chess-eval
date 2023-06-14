@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/137c94cf8e094534b2f33caa9e8c882d/artifacts
+end_time: 1686760658911
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: 137c94cf8e094534b2f33caa9e8c882d
+run_name: receptive-gull-769
+run_uuid: 137c94cf8e094534b2f33caa9e8c882d
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686760107283
+status: 3
+tags: []
+user_id: AndrewKatsipanos

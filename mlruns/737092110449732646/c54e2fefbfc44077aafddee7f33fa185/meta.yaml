@@ -1,0 +1,15 @@
+artifact_uri: file:///C:/Users/AndrewKatsipanos/Documents/chess_eval/chess-eval/mlruns/737092110449732646/c54e2fefbfc44077aafddee7f33fa185/artifacts
+end_time: 1686757796765
+entry_point_name: ''
+experiment_id: '737092110449732646'
+lifecycle_stage: active
+run_id: c54e2fefbfc44077aafddee7f33fa185
+run_name: tasteful-midge-741
+run_uuid: c54e2fefbfc44077aafddee7f33fa185
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1686757305109
+status: 3
+tags: []
+user_id: AndrewKatsipanos
