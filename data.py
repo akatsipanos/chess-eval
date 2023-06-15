@@ -49,35 +49,38 @@ def create_rows(move_list, total_time, ratings, results,depth):
         moves = (move_time.split(" ")[1], move_time.split(" ")[-4]) if len(move_time)>25 else (move_time.split(" ")[1],0)
 
         for i,move in enumerate(moves):
-            if move == 0:
-                continue
-            else:
+            try:
+                if move == 0:
+                    continue
+                else:
+                        
+                    if i==0:
+                        wrt-=time_to_seconds(time_strings[i])
+                        turn = 0
+                    elif i ==1:
+                        brt-=time_to_seconds(time_strings[i])
+                        turn = 1
+
+                    fen = board.fen() # Get the fen for the position
+                    sf.set_fen_position(fen) # For stockfish evaluation
+
+                    features = [convert_fen_to_matrix(fen),
+                                wrt/total_time, 
+                                brt/total_time, 
+                                sf.get_evaluation()['value']/100, 
+                                turn,
+                                ratings[0],
+                                ratings[1],
+                                results]
+                    inner_array = features[0]
+                    remaining_elements = features[1:]
+                    final_array = np.array(list(inner_array) + remaining_elements)
+                    output.append(final_array)
                     
-                if i==0:
-                    wrt-=time_to_seconds(time_strings[i])
-                    turn = 0
-                elif i ==1:
-                    brt-=time_to_seconds(time_strings[i])
-                    turn = 1
 
-                fen = board.fen() # Get the fen for the position
-                sf.set_fen_position(fen) # For stockfish evaluation
-
-                features = [convert_fen_to_matrix(fen),
-                              wrt/total_time, 
-                              brt/total_time, 
-                              sf.get_evaluation()['value']/100, 
-                              turn,
-                              ratings[0],
-                              ratings[1],
-                              results]
-                inner_array = features[0]
-                remaining_elements = features[1:]
-                final_array = np.array(list(inner_array) + remaining_elements)
-                output.append(final_array)
-                
-
-                board.push_san(move)
+                    board.push_san(move)
+            except:
+                continue
     return output
 
 def time_to_seconds(time_str):

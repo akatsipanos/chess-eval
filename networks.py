@@ -1,4 +1,6 @@
 import torch.nn as nn
+import torch
+import numpy as np
 
 class Network_1h(nn.Module):
     def __init__(self, input_size, output_layer1):
@@ -83,3 +85,46 @@ class Network_3h(nn.Module):
         x = self.linear4(x)
         x = self.softmax(x)
         return x
+    
+
+class Conv(nn.Module):
+    def __init__(self):
+        super(Conv,self).__init__()
+
+        self.conv_layers = nn.Sequential(
+            nn.Conv2d(1, 32, kernel_size=3, padding='same'),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(32,64,3,padding='same'),
+            nn.ReLU(inplace=True),
+
+            nn.MaxPool2d(kernel_size=2,stride=2),
+
+            nn.Conv2d(64,128,3,padding='same'),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(128,128,3,padding='same'),
+            nn.ReLU(inplace=True)
+            )
+
+        self.classifier = nn.Sequential(
+                                        nn.Dropout(0.5),
+                                        nn.Linear(128*4*4, 256),
+                                        nn.ReLU(inplace=True),
+                                        nn.Dropout(),
+                                        nn.Linear(256, 128),
+                                        nn.ReLU(inplace=True),
+                                        nn.Linear(128, 3),
+                                        nn.Softmax(dim=1)
+                                    )
+    
+    def forward(self, data):
+        # board,additional_features = torch.tensor(np.zeros((len(data)))),torch.tensor(np.zeros((len(data))))
+
+        # board = torch.reshape(data[:,:64],[256,8,8])
+        x = data[:,:64].view(256,8,8)
+        additional_features = data[:,64:]
+
+        x = self.conv_layers(x)
+        x = torch.flatten(x,1)
+        x = torch.concat((x,additional_features), dim=1)
+        x = self.classifier(x)
+        return x 
