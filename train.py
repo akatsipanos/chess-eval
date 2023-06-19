@@ -54,9 +54,9 @@ def train(args, model, device, X_train_dataloader, y_train_dataloader, optimizer
         target_index = target.argmax(dim=1, keepdim=True)
         correct += (pred_index == target_index).sum().item()
     
-        # if batch_idx % args['log_interval'] == 0:
-        #     print(f'Epoch: {epoch} \tLoss: {loss.item():.6f} \
-        #           \t({batch_idx * len(data)}/{len(X_train_dataloader.dataset)})')
+        if batch_idx % args['log_interval'] == 0:
+            print(f'Epoch: {epoch} \tLoss: {loss.item():.6f} \
+                  \t({batch_idx * len(data)}/{len(X_train_dataloader.dataset)})')
     
     train_loss /= len(X_train_dataloader.dataset)
     train_accuracy = correct / len(X_train_dataloader.dataset)
