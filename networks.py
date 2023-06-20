@@ -92,27 +92,27 @@ class Conv(nn.Module):
         super(Conv,self).__init__()
 
         self.conv_layers = nn.Sequential(
-            nn.Conv2d(1, 32, kernel_size=3, padding='same'),
+            nn.Conv2d(1, 16, kernel_size=3, padding='same'),
             nn.ReLU(inplace=True),
-            nn.Conv2d(32,64,3,padding='same'),
+            nn.Conv2d(16,32,3,padding='same'),
             nn.ReLU(inplace=True),
 
             nn.MaxPool2d(kernel_size=2,stride=2),
 
-            nn.Conv2d(64,128,3,padding='same'),
+            nn.Conv2d(32,64,3,padding='same'),
             nn.ReLU(inplace=True),
-            nn.Conv2d(128,128,3,padding='same'),
+            nn.Conv2d(64,64,3,padding='same'),
             nn.ReLU(inplace=True)
             )
 
         self.classifier = nn.Sequential(
                                         nn.Dropout(0.5),
-                                        nn.Linear(128*4*4+6, 256),
+                                        nn.Linear(64*4*4+6, 128),
                                         nn.ReLU(inplace=True),
                                         nn.Dropout(0.5),
-                                        nn.Linear(256, 128),
+                                        nn.Linear(128, 64),
                                         nn.ReLU(inplace=True),
-                                        nn.Linear(128, 3),
+                                        nn.Linear(64, 3),
                                         nn.Softmax(dim=1)
                                     )
     
