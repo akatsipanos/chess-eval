@@ -109,7 +109,7 @@ class Conv(nn.Module):
                                         nn.Dropout(0.5),
                                         nn.Linear(128*4*4+6, 256),
                                         nn.ReLU(inplace=True),
-                                        nn.Dropout(),
+                                        nn.Dropout(0.5),
                                         nn.Linear(256, 128),
                                         nn.ReLU(inplace=True),
                                         nn.Linear(128, 3),
@@ -117,8 +117,6 @@ class Conv(nn.Module):
                                     )
     
     def forward(self, data):
-        # board,additional_features = torch.tensor(np.zeros((len(data)))),torch.tensor(np.zeros((len(data))))
-        # board = torch.reshape(data[:,:64],[256,8,8])
         x = data[:,:64].view(len(data),8,8)
         x = x.unsqueeze(1)
         additional_features = data[:,64:]
