@@ -1,6 +1,5 @@
 import torch.nn as nn
 import torch
-import numpy as np
 
 class Network_1h(nn.Module):
     def __init__(self, input_size, output_layer1):

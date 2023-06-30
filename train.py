@@ -3,13 +3,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-# from torchvision import datasets, transforms
 from torch.optim import lr_scheduler
 import numpy as np
 import matplotlib.pyplot as plt
 import argparse
 from torch.utils.data import DataLoader
-from sklearn.utils import class_weight
 from networks import Conv
 
 def prep_data(path):
@@ -121,10 +119,9 @@ def main():
     X_val, y_val = prep_data('data/val2.npy')
 
     
-    input_size = len(X_train[0,:])
-    output_layer1= 128
-    output_layer2 = 64
-
+    # input_size = len(X_train[0,:])
+    # output_layer1= 128
+    # output_layer2 = 64
     # model = Network_2h(input_size, output_layer1, output_layer2)
     model = Conv()
     
@@ -132,6 +129,7 @@ def main():
     optimizer = torch.optim.SGD(model.parameters(), lr=args['lr'])
     criterion_train = torch.nn.CrossEntropyLoss()
     criterion_test = torch.nn.CrossEntropyLoss(reduction='sum')
+
     if args['scheduler'] == 'exponential':
         scheduler = lr_scheduler.ExponentialLR(optimizer, gamma = args['gamma'], verbose = True)
     else:
@@ -155,7 +153,7 @@ def main():
             H['val_loss'].append(val_loss)
             H['val_accuracy'].append(val_accuracy)
 
-            # scheduler.step()
+            scheduler.step()
 
             if epoch%5 == 0:
                 plt.style.use('ggplot')
