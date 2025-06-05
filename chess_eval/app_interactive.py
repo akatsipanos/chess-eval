@@ -1,8 +1,7 @@
 from flask import Flask, render_template, request
 import torch
 import torch.nn as nn
-import waitress
-from data import convert_fen_to_matrix
+from chess_eval.data_manipulation import convert_fen_to_matrix
 from stockfish import Stockfish
 import numpy as np
 import json

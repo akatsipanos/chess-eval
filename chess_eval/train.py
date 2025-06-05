@@ -28,7 +28,7 @@ def prep_data(path):
     X = torch.tensor(df[:,:-1])
     y = torch.tensor(df[:,-1])
 
-    y = torch.nn.functional.one_hot(y.to(torch.int64))
+    y = nn.functional.one_hot(y.to(torch.int64))
 
     X = X.to(torch.float32)
     y= y.to(torch.float32)

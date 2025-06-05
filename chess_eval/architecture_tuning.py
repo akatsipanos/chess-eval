@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 import optuna
 import mlflow
 import random
-from networks import Network_1h, Network_2h, Network_3h
+from chess_eval.networks import Network_1h, Network_2h, Network_3h
 
 def prep_data(path):
     import json

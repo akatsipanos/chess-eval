@@ -1,14 +1,12 @@
 from flask import Flask, render_template, request
 import torch
-import torch.nn as nn
-import waitress
-from data import convert_fen_to_matrix
+from chess_eval.data_manipulation import convert_fen_to_matrix
 from stockfish import Stockfish
 import numpy as np
 import json
 import chess
 import chess.svg
-from train import Network
+from chess_eval.networks import Network
 
 def create_input(input_data):
     total_time = 120
