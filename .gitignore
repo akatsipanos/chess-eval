@@ -82,3 +82,5 @@ dmypy.json
 
 # vscode
 .vscode/
+
+mlruns/
