@@ -1,9 +1,9 @@
 import torch.nn as nn
-from torch import flatten, concat
+from torch import Tensor, concat, flatten
 
 
 class Network(nn.Module):
-    def __init__(self, input_size, output_layer1, output_layer2):
+    def __init__(self, input_size: int, output_layer1: int, output_layer2: int) -> None:
         super().__init__()
 
         self.linear1 = nn.Linear(input_size, output_layer1)
@@ -15,7 +15,7 @@ class Network(nn.Module):
         self.linear3 = nn.Linear(output_layer2, 3)
         self.softmax = nn.Softmax(dim=1)
 
-    def forward(self, x):
+    def forward(self, x: Tensor) -> Tensor:
         x = self.linear1(x)
         x = nn.ReLU()(x)
         x = self.batchnorm1(x)
@@ -32,7 +32,7 @@ class Network(nn.Module):
 
 
 class Network_1h(nn.Module):
-    def __init__(self, input_size, output_layer1):
+    def __init__(self, input_size: int, output_layer1: int) -> None:
         super().__init__()
 
         self.linear1 = nn.Linear(input_size, output_layer1)
@@ -41,7 +41,7 @@ class Network_1h(nn.Module):
         self.linear2 = nn.Linear(output_layer1, 3)
         self.softmax = nn.Softmax(dim=1)
 
-    def forward(self, x):
+    def forward(self, x: Tensor) -> Tensor:
         x = self.linear1(x)
         x = nn.ReLU()(x)
         x = self.batchnorm1(x)
@@ -53,7 +53,7 @@ class Network_1h(nn.Module):
 
 
 class Network_2h(nn.Module):
-    def __init__(self, input_size, output_layer1, output_layer2):
+    def __init__(self, input_size: int, output_layer1: int, output_layer2: int) -> None:
         super().__init__()
 
         self.linear1 = nn.Linear(input_size, output_layer1)
@@ -65,7 +65,7 @@ class Network_2h(nn.Module):
         self.linear3 = nn.Linear(output_layer2, 3)
         self.softmax = nn.Softmax(dim=1)
 
-    def forward(self, x):
+    def forward(self, x: Tensor) -> Tensor:
         x = self.linear1(x)
         x = nn.ReLU()(x)
         x = self.batchnorm1(x)
@@ -82,7 +82,13 @@ class Network_2h(nn.Module):
 
 
 class Network_3h(nn.Module):
-    def __init__(self, input_size, output_layer1, output_layer2, output_layer3):
+    def __init__(
+        self,
+        input_size: int,
+        output_layer1: int,
+        output_layer2: int,
+        output_layer3: int,
+    ) -> None:
         super().__init__()
 
         self.linear1 = nn.Linear(input_size, output_layer1)
@@ -97,7 +103,7 @@ class Network_3h(nn.Module):
         self.linear4 = nn.Linear(output_layer3, 3)
         self.softmax = nn.Softmax(dim=1)
 
-    def forward(self, x):
+    def forward(self, x: Tensor) -> Tensor:
         x = self.linear1(x)
         x = nn.ReLU()(x)
         x = self.batchnorm1(x)
@@ -119,7 +125,7 @@ class Network_3h(nn.Module):
 
 
 class Conv(nn.Module):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
 
         self.conv_layers = nn.Sequential(
@@ -145,7 +151,7 @@ class Conv(nn.Module):
             nn.Softmax(dim=1),
         )
 
-    def forward(self, data):
+    def forward(self, data: Tensor) -> Tensor:
         x = data[:, :64].view(len(data), 8, 8)
         x = x.unsqueeze(1)
         additional_features = data[:, 64:]

@@ -1,56 +1,30 @@
 # %%
-import torch
-import torch.nn as nn
-from torch.optim import lr_scheduler
-import numpy as np
-import matplotlib.pyplot as plt
 import argparse
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+import torch
+from torch import device
+from torch.nn import Module
+from torch.optim import Optimizer, lr_scheduler
 from torch.utils.data import DataLoader
-from networks import Conv
 
-
-def prep_data(path):
-    import json
-
-    df = np.load(path)
-
-    if "train" in path:
-        ratings_json = {
-            "min_rating": df[:, -3:-1].min(),
-            "max_rating": df[:, -3:-1].max(),
-        }
-        with open("models/scaling.json", "w") as f:
-            json.dump(ratings_json, f)
-
-    with open("models/scaling.json") as f:
-        ratings_json = json.load(f)
-
-    df[:, -3:-1] = (df[:, -3:-1] - ratings_json["min_rating"]) / (
-        ratings_json["max_rating"] - ratings_json["min_rating"]
-    )
-    np.random.shuffle(df)
-
-    X = torch.tensor(df[:, :-1])
-    y = torch.tensor(df[:, -1])
-
-    y = nn.functional.one_hot(y.to(torch.int64))
-
-    X = X.to(torch.float32)
-    y = y.to(torch.float32)
-    return X, y
+from chess_eval.networks import Conv
+from chess_eval.utils import prep_data
 
 
 def train(
-    args,
-    model,
-    device,
-    X_train_dataloader,
-    y_train_dataloader,
-    optimizer,
-    criterion1,
-    criterion2,
-    epoch,
-):
+    model: Module,
+    device: device,
+    X_train_dataloader: DataLoader,
+    y_train_dataloader: DataLoader,
+    optimizer: Optimizer,
+    criterion1: Module,
+    criterion2: Module,
+    epoch: int,
+    log_interval: int,
+) -> tuple[float, float]:
     model.train()
     correct = 0
     train_loss = 0
@@ -71,7 +45,7 @@ def train(
         target_index = target.argmax(dim=1, keepdim=True)
         correct += (pred_index == target_index).sum().item()
 
-        if batch_idx % args["log_interval"] == 0:
+        if batch_idx % log_interval == 0:
             print(
                 f"Epoch: {epoch} \tLoss: {loss.item():.6f} \
                   \t({batch_idx * len(data)}/{len(X_train_dataloader.dataset)})"
@@ -79,7 +53,6 @@ def train(
 
     train_loss /= len(X_train_dataloader.dataset)
     train_accuracy = correct / len(X_train_dataloader.dataset)
-
     print(
         f"Train set: \tAverage loss:\t{train_loss:.4f} \
           \tAccuracy: {correct}/{len(X_train_dataloader.dataset)} ({100.0 * train_accuracy:.1f}%)"
@@ -87,7 +60,13 @@ def train(
     return train_loss, train_accuracy
 
 
-def validate(model, device, X_test_loader, y_test_loader, criterion):
+def validate(
+    model: Module,
+    device: device,
+    X_test_loader: DataLoader,
+    y_test_loader: DataLoader,
+    criterion: Module,
+) -> tuple[float, float]:
     model.eval()
     val_loss = 0
     correct = 0
@@ -104,16 +83,11 @@ def validate(model, device, X_test_loader, y_test_loader, criterion):
 
     val_loss /= len(X_test_loader.dataset)
     val_accuracy = correct / len(X_test_loader.dataset)
-    print(
-        f"Val set: \tAverage loss:\t{val_loss:.4f} \
-          \tAccuracy: {correct}/{len(X_test_loader.dataset)} ({100.0 * val_accuracy:.1f}%)"
-    )
-    print("\n-----------------------------------------\n")
 
     return val_loss, val_accuracy
 
 
-def main():
+def main() -> None:
     try:
         ap = argparse.ArgumentParser()
         ap.add_argument(
@@ -175,8 +149,8 @@ def main():
 
     device = torch.device("cpu")
 
-    X_train, y_train = prep_data("data/train.npy")
-    X_val, y_val = prep_data("data/val2.npy")
+    X_train, y_train = prep_data(Path("data/train.npy"), Path("scaling.json"))
+    X_val, y_val = prep_data(Path("data/val2.npy"), Path("scaling.json"))
 
     # input_size = len(X_train[0,:])
     # output_layer1= 128
@@ -189,12 +163,10 @@ def main():
     criterion_test = torch.nn.CrossEntropyLoss(reduction="sum")
 
     if args["scheduler"] == "exponential":
-        scheduler = lr_scheduler.ExponentialLR(
-            optimizer, gamma=args["gamma"], verbose=True
-        )
+        scheduler = lr_scheduler.ExponentialLR(optimizer, gamma=args["gamma"])
     else:
         scheduler = lr_scheduler.StepLR(
-            optimizer, step_size=args["step_size"], gamma=args["gamma"], verbose=True
+            optimizer, step_size=args["step_size"], gamma=args["gamma"]
         )
 
     X_train_dataloader = DataLoader(X_train[:, :], batch_size=args["batch_size"])
@@ -202,11 +174,15 @@ def main():
     X_val_dataloader = DataLoader(X_val[:, :], batch_size=args["batch_size"])
     y_val_dataloader = DataLoader(y_val[:, :], batch_size=args["batch_size"])
 
-    H = {"train_loss": [], "val_loss": [], "train_accuracy": [], "val_accuracy": []}
+    H: dict[str, list[float]] = {
+        "train_loss": [],
+        "val_loss": [],
+        "train_accuracy": [],
+        "val_accuracy": [],
+    }
     for epoch in range(1, args["epochs"] + 1):
         print(f"Epoch: {epoch}")
         train_loss, train_accuracy = train(
-            args,
             model,
             device,
             X_train_dataloader,
@@ -215,6 +191,7 @@ def main():
             criterion_train,
             criterion_test,
             epoch,
+            args["log_interval"],
         )
         val_loss, val_accuracy = validate(
             model, device, X_val_dataloader, y_val_dataloader, criterion_test

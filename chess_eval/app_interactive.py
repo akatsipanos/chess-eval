@@ -1,58 +1,29 @@
-from flask import Flask, render_template, request
-import torch
-import torch.nn as nn
-from chess_eval.data_manipulation import convert_fen_to_matrix
-from stockfish import Stockfish
-import numpy as np
-import json
+import logging
+
 import chess
 import chess.svg
+import torch
+import torch.nn as nn
+from flask import Flask, render_template, request
 
+from chess_eval.utils import create_input
 
-def create_input(input_data):
-    total_time = 120
-    turn_map = {"white": 0, "black": 1}
-
-    sf = Stockfish(r"/usr/local/Cellar/stockfish/15.1/bin/stockfish", depth=20)
-    fen = input_data["fen_number"]
-    if not sf.is_fen_valid():
-        raise ValueError(f"Input must be a valid FEN - provided value is {fen}")
-
-    sf.set_fen_position(fen)
-
-    features = [
-        convert_fen_to_matrix(fen),
-        float(input_data["white_time"]) / total_time,
-        float(input_data["black_time"]) / total_time,
-        sf.get_evaluation()["value"] / 100,
-        turn_map[input_data["turn"].lower()],
-        int(input_data["white_rating"]),
-        int(input_data["black_rating"]),
-    ]
-    inner_array = features[0]
-    remaining_elements = features[1:]
-    X = np.array(list(inner_array) + remaining_elements)
-
-    with open("models/scaling.json") as f:
-        ratings_json = json.load(f)
-    X[-2:] = (X[-2:] - ratings_json["min_rating"]) / (
-        ratings_json["max_rating"] - ratings_json["min_rating"]
-    )
-    X = torch.tensor(X).to(torch.float32)
-    print(X)
-    return X
-
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)8s | %(filename)s:%(lineno)d | %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 
 app = Flask(__name__)
 
 
 @app.route("/")
-def home():
+def home() -> str:
     return render_template("index.html")
 
 
 @app.route("/predict", methods=["POST"])
-def predict():
+def predict() -> str:
     # Get user input from the forms
     input_data = {
         "fen_number": request.form["fen_number"],

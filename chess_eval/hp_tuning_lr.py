@@ -1,106 +1,17 @@
 # %%
+import random
+
+import matplotlib.pyplot as plt
+import mlflow
+import numpy as np
+import optuna
 import torch
 from torch.optim import lr_scheduler
-import numpy as np
-import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
-import optuna
-import mlflow
-import random
+
 from chess_eval.networks import Network
-
-
-def prep_data(path):
-    import json
-
-    df = np.load(path)
-
-    if "train" in path:
-        ratings_json = {
-            "min_rating": df[:, -3:-1].min(),
-            "max_rating": df[:, -3:-1].max(),
-        }
-        with open("scaling.json", "w") as f:
-            json.dump(ratings_json, f)
-
-    with open("scaling.json") as f:
-        ratings_json = json.load(f)
-
-    df[:, -3:-1] = (df[:, -3:-1] - ratings_json["min_rating"]) / (
-        ratings_json["max_rating"] - ratings_json["min_rating"]
-    )
-    np.random.shuffle(df)
-
-    X = torch.tensor(df[:, :-1])
-    y = torch.tensor(df[:, -1])
-
-    y = torch.nn.functional.one_hot(y.to(torch.int64))
-
-    X = X.to(torch.float32)
-    y = y.to(torch.float32)
-    return X, y
-
-
-def train(
-    args,
-    model,
-    device,
-    X_train_dataloader,
-    y_train_dataloader,
-    optimizer,
-    criterion1,
-    criterion2,
-    epoch,
-):
-    model.train()
-    correct = 0
-    train_loss = 0
-    for batch_idx, (data, target) in enumerate(
-        zip(X_train_dataloader, y_train_dataloader)
-    ):
-        data, target = data.to(device), target.to(device)
-        optimizer.zero_grad()
-        output = model(data)
-        loss = criterion1(output, target)
-        train_loss += criterion2(output, target).item()
-        loss.backward()
-        optimizer.step()
-
-        pred_index = output.argmax(
-            dim=1, keepdim=True
-        )  # get the index of the max log-probability
-        target_index = target.argmax(dim=1, keepdim=True)
-        correct += (pred_index == target_index).sum().item()
-
-        # if batch_idx % args['log_interval'] == 0:
-        #     print(f'Epoch: {epoch} \tLoss: {loss.item():.6f} \
-        #           \t({batch_idx * len(data)}/{len(X_train_dataloader.dataset)})')
-
-    train_loss /= len(X_train_dataloader.dataset)
-    train_accuracy = correct / len(X_train_dataloader.dataset)
-
-    return train_loss, train_accuracy
-
-
-def validate(model, device, X_test_loader, y_test_loader, criterion):
-    model.eval()
-    val_loss = 0
-    correct = 0
-    with torch.no_grad():
-        for data, target in zip(X_test_loader, y_test_loader):
-            data, target = data.to(device), target.to(device)
-            output = model(data)
-            val_loss += criterion(output, target).item()  # sum up batch loss
-            pred_index = output.argmax(
-                dim=1, keepdim=True
-            )  # get the index of the max log-probability
-            target_index = target.argmax(dim=1, keepdim=True)
-            correct += (pred_index == target_index).sum().item()
-
-    val_loss /= len(X_test_loader.dataset)
-    val_accuracy = correct / len(X_test_loader.dataset)
-
-    return val_loss, val_accuracy
+from chess_eval.train import train, validate
+from chess_eval.utils import prep_data
 
 
 def main():
