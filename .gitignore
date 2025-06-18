@@ -85,3 +85,4 @@ dmypy.json
 
 mlruns/
 stockfish/
+data/processed/
