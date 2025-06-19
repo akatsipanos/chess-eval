@@ -1,11 +1,14 @@
 import logging
+from pathlib import Path
 
 import chess
 import chess.svg
 import torch
-import torch.nn as nn
+
+# import torch.nn as nn
 from flask import Flask, render_template, request
 
+from chess_eval.networks import Network
 from chess_eval.utils import create_input
 
 logging.basicConfig(
@@ -15,6 +18,8 @@ logging.basicConfig(
 )
 
 app = Flask(__name__)
+base_dir = Path(__file__).parent.parent.resolve()
+template_dir = base_dir / "templates"
 
 
 @app.route("/")
@@ -40,21 +45,8 @@ def predict() -> str:
     input_size = 70
     output_layer1 = 32
     output_layer2 = 16
-    model = nn.Sequential(
-        nn.Linear(input_size, output_layer1),
-        nn.ReLU(),
-        nn.BatchNorm1d(num_features=output_layer1),
-        nn.Dropout(0.5),
-        nn.Linear(output_layer1, output_layer2),
-        nn.ReLU(),
-        nn.BatchNorm1d(num_features=output_layer2),
-        nn.Dropout(0.5),
-        nn.Linear(output_layer2, 3),
-        nn.Softmax(dim=1),
-    )
-
+    model = Network(input_size, output_layer1, output_layer2)
     model_state_dict = torch.load("models/chess_model.pt")  # nosec: CWE-502
-
     model.load_state_dict(model_state_dict)
 
     X = X.unsqueeze(0)
@@ -77,7 +69,10 @@ def predict() -> str:
 
     # Return the prediction result to the user
     return render_template(
-        "results2.html", result=result, result_str=result_str, svg_image=image
+        "results2.html",
+        result=result,
+        result_str=result_str,
+        svg_image=image,
     )
 
 

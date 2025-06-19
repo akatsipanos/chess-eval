@@ -5,13 +5,15 @@ import logging
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, TypedDict
+from typing import Any
 
 import chess
 import numpy as np
 from numpy.typing import NDArray
 from yaml import safe_load
 
+from chess_eval.schemas import GameDict, MovesDict
+from chess_eval.utils import convert_fen_to_matrix, convert_time_str_to_seconds
 from stockfish import Stockfish  # type: ignore
 
 logging.basicConfig(
@@ -21,75 +23,11 @@ logging.basicConfig(
 )
 
 
-class MoveDict(TypedDict, total=False):
-    move: str
-    time: int
-
-
-class MovesDict(TypedDict, total=False):
-    white: MoveDict
-    black: MoveDict
-
-
-class GameDict(TypedDict, total=False):
-    ratings: tuple[int, int]
-    moves: list[MovesDict]
-    result: int
-    total_time: int
-
-
-def convert_time_str_to_seconds(time_str: str) -> int:
-    """
-    Input str format is [%emt 00:00:00]
-    """
-    time_match = re.search(r"\d+:\d+:\d+", time_str)
-    if not time_match:
-        raise ValueError(f"Time string incompatible - {time_str}")
-    time = time_match.group()
-    h, m, s = map(int, time.split(":"))
-    return h * 3600 + m * 60 + s
-
-
-def convert_fen_to_matrix(fen_string: str) -> NDArray[np.float64]:
-    piece_values = {
-        "P": 0.1,
-        "N": 0.3,
-        "B": 0.35,
-        "R": 0.5,
-        "Q": 0.9,
-        "K": 1.0,
-        "p": -0.1,
-        "n": -0.3,
-        "b": -0.35,
-        "r": -0.5,
-        "q": -0.9,
-        "k": -1.0,
-    }
-
-    # Initialize the matrix with zeros
-    matrix = [[0 for _ in range(8)] for _ in range(8)]
-
-    # Split FEN string into relevant parts
-    fen_parts = fen_string.split()
-    board_part = fen_parts[0]
-    ranks = board_part.split("/")
-
-    # Iterate over ranks and files to fill the matrix
-    for rank, fen_rank in enumerate(ranks):
-        file_index = 0
-        for char in fen_rank:
-            if char.isdigit():
-                # Empty squares
-                file_index += int(char)
-            else:
-                # Piece squares
-                matrix[rank][file_index] = piece_values[char]  # type: ignore
-                file_index += 1
-
-    return np.array(matrix).flatten()
-
-
-@dataclass(init=True)
+# TODO
+# - Add better logging throughout
+# - Fix up the init vars
+# -
+@dataclass
 class DataProcessing:
     sf_path: Path | str
     raw_data_path: Path
@@ -133,14 +71,14 @@ class DataProcessing:
             # findall returns list so take [0] values for everything
             # out of index error not possible as empty list picked up in
             # error handling
-            white_rating = white_rating_match.group(1)
-            black_rating = black_rating_match.group(1)
+            white_rating = white_rating_match.group(1)  # type: ignore
+            black_rating = black_rating_match.group(1)  # type: ignore
             ratings = (int(white_rating), int(black_rating))
             result_map = {"1-0": 0, "1/2": 1, "1/2-1/2": 1, "0-1": 2}
-            result = result_map.get(result_match.group(1), 1)
+            result = result_map.get(result_match.group(1), 1)  # type: ignore
             game_dict["ratings"] = ratings
             game_dict["result"] = result
-            game_dict["total_time"] = int(total_time_match.group(1).split("+")[0])
+            game_dict["total_time"] = int(total_time_match.group(1).split("+")[0])  # type: ignore
 
             # To get moves into desired format, need to convert the format - 1. d4 {[%emt 00:00:00]} d5 {[%emt 00:00:00]}
             # into the above json format. Basically, find a regex to get each component out
@@ -173,7 +111,7 @@ class DataProcessing:
 
             output.append(game_dict)
         self.json_data = output
-        with open(self.output_dir / f"{self.data_type}.json") as file:
+        with open(self.output_dir / f"{self.data_type}.json", "w") as file:
             json.dump(self.json_data, file)
 
     def _create_rows(self, game: GameDict) -> list[NDArray[np.float64]]:
@@ -190,10 +128,10 @@ class DataProcessing:
             for color, move_dict in move_pair.items():
                 # Step through white then black moves
                 if color == "white":
-                    wrt -= move_dict["time"]
+                    wrt -= move_dict["time"]  # type:ignore
                     turn = 0
                 elif color == "black":
-                    brt -= move_dict["time"]
+                    brt -= move_dict["time"]  # type:ignore
                     turn = 1
 
                 fen = board.fen()  # Get the fen for the position
@@ -214,7 +152,7 @@ class DataProcessing:
                 final_array = np.array(list(inner_array) + remaining_elements)
                 output.append(final_array)
 
-                board.push_san(move_dict["move"])
+                board.push_san(move_dict["move"])  # type: ignore
 
         return output
 
@@ -297,8 +235,6 @@ if __name__ == "__main__":
     except SystemExit:
         config = "windows"
     main(config)
-
-# Need to sort out the output. Final output should be an array of shape (452215,70)
 
 
 # %%

@@ -152,7 +152,7 @@ class Conv(nn.Module):
         )
 
     def forward(self, data: Tensor) -> Tensor:
-        x = data[:, :64].view(len(data), 8, 8)
+        x: Tensor = data[:, :64].view(len(data), 8, 8)
         x = x.unsqueeze(1)
         additional_features = data[:, 64:]
 

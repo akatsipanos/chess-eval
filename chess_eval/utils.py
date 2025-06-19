@@ -1,15 +1,16 @@
 import json
 import logging
+import re
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 import torch
 import torch.nn.functional as F
+from numpy.typing import NDArray
 from torch import Tensor
 
-from chess_eval.data_manipulation import convert_fen_to_matrix
-from stockfish import Stockfish
+from stockfish import Stockfish  # type: ignore
 
 
 def create_input(input_data: dict[str, Any]) -> Tensor:
@@ -34,14 +35,14 @@ def create_input(input_data: dict[str, Any]) -> Tensor:
     ]
     inner_array = features[0]
     remaining_elements = features[1:]
-    X = np.array(list(inner_array) + remaining_elements)
+    X_array: NDArray[np.float32] = np.array(list(inner_array) + remaining_elements)
 
     with open("models/scaling.json") as f:
         ratings_json = json.load(f)
-    X[-2:] = (X[-2:] - ratings_json["min_rating"]) / (
+    X_array[-2:] = (X_array[-2:] - ratings_json["min_rating"]) / (
         ratings_json["max_rating"] - ratings_json["min_rating"]
     )
-    X = torch.tensor(X).to(torch.float32)
+    X = torch.tensor(X_array).to(torch.float32)
     logging.info(X)
     return X
 
@@ -73,3 +74,54 @@ def prep_data(data_path: Path, scaling_path: Path) -> tuple[Tensor, Tensor]:
     X = X.to(torch.float32)
     y = y.to(torch.float32)
     return X, y
+
+
+def convert_time_str_to_seconds(time_str: str) -> int:
+    """
+    Input str format is [%emt 00:00:00]
+    """
+    time_match = re.search(r"\d+:\d+:\d+", time_str)
+    if not time_match:
+        raise ValueError(f"Time string incompatible - {time_str}")
+    time = time_match.group()
+    h, m, s = map(int, time.split(":"))
+    return h * 3600 + m * 60 + s
+
+
+def convert_fen_to_matrix(fen_string: str) -> NDArray[np.float64]:
+    piece_values = {
+        "P": 0.1,
+        "N": 0.3,
+        "B": 0.35,
+        "R": 0.5,
+        "Q": 0.9,
+        "K": 1.0,
+        "p": -0.1,
+        "n": -0.3,
+        "b": -0.35,
+        "r": -0.5,
+        "q": -0.9,
+        "k": -1.0,
+    }
+
+    # Initialize the matrix with zeros
+    matrix = [[0 for _ in range(8)] for _ in range(8)]
+
+    # Split FEN string into relevant parts
+    fen_parts = fen_string.split()
+    board_part = fen_parts[0]
+    ranks = board_part.split("/")
+
+    # Iterate over ranks and files to fill the matrix
+    for rank, fen_rank in enumerate(ranks):
+        file_index = 0
+        for char in fen_rank:
+            if char.isdigit():
+                # Empty squares
+                file_index += int(char)
+            else:
+                # Piece squares
+                matrix[rank][file_index] = piece_values[char]  # type: ignore
+                file_index += 1
+
+    return np.array(matrix).flatten()
