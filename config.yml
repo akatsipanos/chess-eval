@@ -4,8 +4,14 @@ mac:
   raw_data_path: ''
   output_path: ''
 
-windows:
+windows-train:
   sf_path: 'stockfish/stockfish-windows-x86-64-avx2.exe'
   sf_depth: 10
   raw_data_file_name: "2018_03_11-2023_05_25.pgn"
   data_type: "train"
+
+windows-val:
+  sf_path: 'stockfish/stockfish-windows-x86-64-avx2.exe'
+  sf_depth: 10
+  raw_data_file_name: "2017_01_27-2018_03_10.pgn"
+  data_type: "val"

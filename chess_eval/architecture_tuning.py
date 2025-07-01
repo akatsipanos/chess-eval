@@ -1,16 +1,17 @@
 # %%
 import random
-from typing import Any
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import mlflow
 import numpy as np
 import optuna
 import torch
-from torch.optim import lr_scheduler
-from torch.utils.data import DataLoader
+import torch.nn as nn
+from torch.optim import Optimizer, lr_scheduler
 
 from chess_eval.networks import Network_1h, Network_2h, Network_3h
+from chess_eval.schemas import CustomDataLoader, CustomDataset
 from chess_eval.train import train, validate
 from chess_eval.utils import prep_data
 
@@ -22,10 +23,16 @@ def main() -> None:
 
     device = torch.device("cpu")
 
-    X_train, y_train = prep_data("data/train.npy")
-    X_val, y_val = prep_data("data/val.npy")
+    base_dir = Path(__file__).parent.parent.resolve()
+    data_dir = base_dir / "data" / "processed"
+    train_data_path = data_dir / "train" / "train.npy"
+    val_data_path = data_dir / "val" / "val.npy"
+    scaling_path = Path(__file__).parent.resolve() / "scaling.json"
 
-    def objective(trial: Any) -> float:
+    X_train, y_train = prep_data(train_data_path, scaling_path)
+    X_val, y_val = prep_data(val_data_path, scaling_path)
+
+    def objective(trial: optuna.Trial) -> float:
         with mlflow.start_run():
             params = {
                 "n_hidden": trial.suggest_categorical("n_hidden", [1, 2, 3]),
@@ -38,6 +45,7 @@ def main() -> None:
             input_size = len(X_train[0, :])
             neurons = [params["h1"], params["h2"], params["h3"]]
 
+            model: nn.Module
             if params["n_hidden"] == 1:
                 model = Network_1h(input_size, neurons[0])
 
@@ -47,19 +55,19 @@ def main() -> None:
             else:
                 model = Network_3h(input_size, neurons[0], neurons[1], neurons[2])
 
-            optimizer = torch.optim.SGD(model.parameters(), lr=0.25)
+            optimizer: Optimizer = torch.optim.SGD(model.parameters(), lr=0.25)
 
             criterion_train = torch.nn.CrossEntropyLoss()
             criterion_test = torch.nn.CrossEntropyLoss(reduction="sum")
 
             scheduler = lr_scheduler.StepLR(optimizer, step_size=15, gamma=0.8)
 
-            X_train_dataloader = DataLoader(X_train[:, :], batch_size=256)
-            y_train_dataloader = DataLoader(y_train[:, :], batch_size=256)
-            X_val_dataloader = DataLoader(X_val[:, :], batch_size=256)
-            y_val_dataloader = DataLoader(y_val[:, :], batch_size=256)
+            X_train_dataloader = CustomDataLoader(CustomDataset(X_train[:, :]), 256)
+            y_train_dataloader = CustomDataLoader(CustomDataset(y_train[:, :]), 256)
+            X_val_dataloader = CustomDataLoader(CustomDataset(X_val[:, :]), 256)
+            y_val_dataloader = CustomDataLoader(CustomDataset(y_val[:, :]), 256)
 
-            H = {
+            H: dict[str, list[float]] = {
                 "train_loss": [],
                 "val_loss": [],
                 "train_accuracy": [],
@@ -68,7 +76,6 @@ def main() -> None:
             epochs = 65
             for epoch in range(1, epochs + 1):
                 train_loss, train_accuracy = train(
-                    params,
                     model,
                     device,
                     X_train_dataloader,

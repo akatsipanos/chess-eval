@@ -32,11 +32,11 @@ class DataProcessing:
     sf_path: Path | str
     raw_data_path: Path
     output_dir: Path
+    data_type: str
     sf_depth: int = field(default=10)
     moves_to_skip: int = 3
     number_of_games: int = 50
     verbose: int = 500
-    data_type: str = "train"
 
     row_count: int = field(init=False)
     json_data: list[GameDict] = field(init=False)

@@ -1,4 +1,8 @@
-from typing import TypedDict
+from collections.abc import Iterator
+from typing import Any, TypedDict
+
+from torch import Tensor
+from torch.utils.data import DataLoader, Dataset
 
 
 class MoveDict(TypedDict, total=False):
@@ -16,3 +20,30 @@ class GameDict(TypedDict, total=False):
     moves: list[MovesDict]
     result: int
     total_time: int
+
+
+class CustomDataset(Dataset[Tensor]):
+    def __init__(self, data: Tensor) -> None:
+        self.data = data
+
+    def __len__(self) -> int:
+        return len(self.data)
+
+    def __getitem__(self, idx: int) -> Tensor:
+        return self.data[idx]
+
+
+class CustomDataLoader:
+    def __init__(
+        self, dataset: CustomDataset, batch_size: int = 1, **kwargs: Any
+    ) -> None:
+        self.dataset = dataset
+        self._dataloader: DataLoader[Tensor] = DataLoader(
+            dataset, batch_size=batch_size, **kwargs
+        )
+
+    def __iter__(self) -> Iterator[Tensor]:
+        return iter(self._dataloader)
+
+    def __len__(self) -> int:
+        return len(self.dataset)

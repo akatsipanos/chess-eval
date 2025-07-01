@@ -1,40 +1,46 @@
 # %%
 import random
+from pathlib import Path
+from typing import Any
 
 import matplotlib.pyplot as plt
 import mlflow
 import numpy as np
 import optuna
 import torch
-from torch.optim import lr_scheduler
-from torch.utils.data import DataLoader
+from torch.optim import Optimizer, lr_scheduler
 
 from chess_eval.networks import Network
+from chess_eval.schemas import CustomDataLoader, CustomDataset
 from chess_eval.train import train, validate
 from chess_eval.utils import prep_data
 
 
-def main():
+def main() -> None:
     torch.manual_seed(123)
     random.seed(123)
     np.random.seed(123)
 
     device = torch.device("cpu")
 
-    X_train, y_train = prep_data("data/train.npy")
-    X_val, y_val = prep_data("data/val.npy")
+    base_dir = Path(__file__).parent.parent.resolve()
+    data_dir = base_dir / "data" / "processed"
+    train_data_path = data_dir / "train" / "train.npy"
+    val_data_path = data_dir / "val" / "val.npy"
+    scaling_path = Path(__file__).parent.resolve() / "scaling.json"
+
+    X_train, y_train = prep_data(train_data_path, scaling_path)
+    X_val, y_val = prep_data(val_data_path, scaling_path)
 
     input_size = len(X_train[0, :])
     output_layer1 = 32
     output_layer2 = 16
 
-    model = Network(
-        input_size=input_size, output_layer1=output_layer1, output_layer2=output_layer2
-    )
+    model = Network(input_size, output_layer1, output_layer2)
 
-    def objective(trial):
+    def objective(trial: optuna.Trial) -> float:
         with mlflow.start_run():
-            params = {
+            params: dict[str, Any] = {
                 "epochs": trial.suggest_categorical("epochs", [10, 50, 100]),
                 "lr": trial.suggest_float("learning_rate", 1e-4, 0.8, log=True),
                 "gamma": trial.suggest_float("gamma", 0.1, 0.9),
@@ -42,11 +48,12 @@ def main():
                     "scheduler", ["step", "exponential"]
                 ),
                 "batch_size": trial.suggest_categorical("batch_size", [128, 256, 512]),
-                "step_size": trial.suggest_int("step_size", 5, 20, 5),
+                "step_size": trial.suggest_int("step_size", low=5, high=20, step=5),
                 "optimizer": trial.suggest_categorical("optimiser", ["SGD", "Adam"]),
             }
             mlflow.log_params(params)
 
+            optimizer: Optimizer
             if params["optimizer"] == "SGD":
                 optimizer = torch.optim.SGD(model.parameters(), lr=params["lr"])
             else:
@@ -55,6 +62,7 @@ def main():
             criterion_train = torch.nn.CrossEntropyLoss()
             criterion_test = torch.nn.CrossEntropyLoss(reduction="sum")
 
+            scheduler: lr_scheduler.LRScheduler
             if params["scheduler"] == "exponential":
                 scheduler = lr_scheduler.ExponentialLR(optimizer, gamma=params["gamma"])
             else:
@@ -62,16 +70,20 @@ def main():
                     optimizer, step_size=params["step_size"], gamma=params["gamma"]
                 )
 
-            X_train_dataloader = DataLoader(
-                X_train[:, :], batch_size=params["batch_size"]
+            X_train_dataloader = CustomDataLoader(
+                CustomDataset(X_train[:, :]), batch_size=params["batch_size"]
             )
-            y_train_dataloader = DataLoader(
-                y_train[:, :], batch_size=params["batch_size"]
+            y_train_dataloader = CustomDataLoader(
+                CustomDataset(y_train[:, :]), batch_size=params["batch_size"]
             )
-            X_val_dataloader = DataLoader(X_val[:, :], batch_size=params["batch_size"])
-            y_val_dataloader = DataLoader(y_val[:, :], batch_size=params["batch_size"])
+            X_val_dataloader = CustomDataLoader(
+                CustomDataset(X_val[:, :]), batch_size=params["batch_size"]
+            )
+            y_val_dataloader = CustomDataLoader(
+                CustomDataset(y_val[:, :]), batch_size=params["batch_size"]
+            )
 
-            H = {
+            H: dict[str, list[float]] = {
                 "train_loss": [],
                 "val_loss": [],
                 "train_accuracy": [],
@@ -79,7 +91,7 @@ def main():
             }
             for epoch in range(1, params["epochs"] + 1):
                 train_loss, train_accuracy = train(
-                    params,
+                    # params,
                     model,
                     device,
                     X_train_dataloader,
