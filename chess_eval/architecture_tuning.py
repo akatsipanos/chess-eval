@@ -1,5 +1,4 @@
 # %%
-import random
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -18,7 +17,7 @@ from chess_eval.utils import prep_data
 
 def main() -> None:
     torch.manual_seed(123)
-    random.seed(123)
+
     np.random.seed(123)
 
     device = torch.device("cpu")
