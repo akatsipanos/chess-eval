@@ -1,6 +1,7 @@
 from collections.abc import Iterator
 from typing import Any, TypedDict
 
+from pydantic import BaseModel
 from torch import Tensor
 from torch.utils.data import DataLoader, Dataset
 
@@ -47,3 +48,12 @@ class CustomDataLoader:
 
     def __len__(self) -> int:
         return len(self.dataset)
+
+
+class InputData(BaseModel):
+    fen_number: str
+    white_time: str
+    black_time: str
+    white_rating: str
+    black_rating: str
+    turn: str

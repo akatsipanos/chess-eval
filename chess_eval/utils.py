@@ -2,7 +2,6 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import Any
 
 import numpy as np
 import torch
@@ -10,34 +9,35 @@ import torch.nn.functional as F
 from numpy.typing import NDArray
 from torch import Tensor
 
+from chess_eval.schemas import InputData
 from stockfish import Stockfish  # type: ignore
 
 
-def create_input(input_data: dict[str, Any]) -> Tensor:
+def create_input(input_data: InputData) -> Tensor:
     total_time = 120
     turn_map = {"white": 0, "black": 1}
 
-    sf = Stockfish(r"/usr/local/Cellar/stockfish/15.1/bin/stockfish", depth=20)
-    fen = input_data["fen_number"]
-    if not sf.is_fen_valid():
+    sf = Stockfish(r"../stockfish/stockfish-windows-x86-64-avx2.exe", depth=20)
+    fen = input_data.fen_number
+    if not sf.is_fen_valid(fen):
         raise ValueError(f"Input must be a valid FEN - provided value is {fen}")
 
     sf.set_fen_position(fen)
 
     features = [
         convert_fen_to_matrix(fen),
-        float(input_data["white_time"]) / total_time,
-        float(input_data["black_time"]) / total_time,
+        float(input_data.white_time) / total_time,
+        float(input_data.black_time) / total_time,
         sf.get_evaluation()["value"] / 100,
-        turn_map[input_data["turn"].lower()],
-        int(input_data["white_rating"]),
-        int(input_data["black_rating"]),
+        turn_map[input_data.turn.lower()],
+        int(input_data.white_rating),
+        int(input_data.black_rating),
     ]
     inner_array = features[0]
     remaining_elements = features[1:]
     X_array: NDArray[np.float32] = np.array(list(inner_array) + remaining_elements)
 
-    with open("models/scaling.json") as f:
+    with open("../models/scaling.json") as f:
         ratings_json = json.load(f)
     X_array[-2:] = (X_array[-2:] - ratings_json["min_rating"]) / (
         ratings_json["max_rating"] - ratings_json["min_rating"]

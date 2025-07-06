@@ -8,7 +8,6 @@ repos:
       - id: check-yaml
       - id: end-of-file-fixer
       - id: check-added-large-files
-        # args: ['--maxkb=10000']
       - id: check-executables-have-shebangs
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
@@ -35,13 +34,11 @@ repos:
     rev: v1.5.0
     hooks:
       - id: detect-secrets
-        # exclude: '.*\.html$'
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.11.12
     hooks:
       # Run the linter.
       - id: ruff-check
-        # args: [ --fix ]
       # Run the formatter.
       - id: ruff-format
   - repo: https://github.com/PyCQA/bandit
@@ -58,12 +55,3 @@ repos:
           [
             --drop-empty-cells
           ]
-  # - repo: https://github.com/psf/black
-  #   rev: 24.3.0
-  #   hooks:
-  #     - id: black
-  # - repo: https://github.com/sqlfluff/sqlfluff
-  #   rev: 3.2.0
-  #   hooks:
-  #     - id: sqlfluff-lint
-  #       args: [--dialect, snowflake]  # or Teradata
