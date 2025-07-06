@@ -9,7 +9,7 @@ import torch.nn as nn
 from torch import device
 from torch.optim import Optimizer, lr_scheduler
 
-from chess_eval.networks import Conv
+from chess_eval.networks import Network
 from chess_eval.schemas import CustomDataLoader, CustomDataset
 from chess_eval.utils import prep_data
 
@@ -168,7 +168,13 @@ def main() -> None:
         data_dir / "val" / "val_d10.npy", Path(__file__).parent / "scaling.json"
     )
 
-    model = Conv()
+    # model = Conv()
+    input_size = 70
+    output_layer1 = 32
+    output_layer2 = 16
+    model = Network(
+        input_size=input_size, output_layer1=output_layer1, output_layer2=output_layer2
+    )
 
     optimizer = torch.optim.SGD(model.parameters(), lr=args["lr"])
     criterion_train = nn.CrossEntropyLoss()

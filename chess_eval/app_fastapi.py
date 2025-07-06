@@ -1,5 +1,6 @@
 # WIP
 import logging
+from pathlib import Path
 from typing import Annotated
 
 import chess
@@ -24,14 +25,15 @@ logging.basicConfig(
 
 app = FastAPI()
 
-templates = Jinja2Templates(directory="templates")
-app.mount("/static", StaticFiles(directory="static"), name="static")
+base_dir = Path(__file__).parent.resolve()
+templates = Jinja2Templates(directory=base_dir / "templates")
+app.mount("/static", StaticFiles(directory=base_dir / "static"), name="static")
 
 
 @app.get("/", response_class=HTMLResponse)
 def home() -> FileResponse:
     # return templates.TemplateResponse("index.html")  # ,{"request": request})
-    return FileResponse("templates/index.html")
+    return FileResponse("index.html")
 
 
 @app.post("/predict")
@@ -47,7 +49,7 @@ async def predict(request: Request, data: Annotated[InputData, Form()]) -> HTMLR
         input_size=input_size, output_layer1=output_layer1, output_layer2=output_layer2
     )
 
-    model_state_dict = torch.load("../models/chess_model.pt")  # nosec: CWE-502
+    model_state_dict = torch.load("models/chess_model.pt")  # nosec: CWE-502
 
     model.load_state_dict(model_state_dict)
 

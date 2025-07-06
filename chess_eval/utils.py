@@ -17,7 +17,7 @@ def create_input(input_data: InputData) -> Tensor:
     total_time = 120
     turn_map = {"white": 0, "black": 1}
 
-    sf = Stockfish(r"../stockfish/stockfish-windows-x86-64-avx2.exe", depth=20)
+    sf = Stockfish(r"stockfish/stockfish-windows-x86-64-avx2.exe", depth=20)
     fen = input_data.fen_number
     if not sf.is_fen_valid(fen):
         raise ValueError(f"Input must be a valid FEN - provided value is {fen}")
@@ -37,7 +37,7 @@ def create_input(input_data: InputData) -> Tensor:
     remaining_elements = features[1:]
     X_array: NDArray[np.float32] = np.array(list(inner_array) + remaining_elements)
 
-    with open("../models/scaling.json") as f:
+    with open("models/scaling.json") as f:
         ratings_json = json.load(f)
     X_array[-2:] = (X_array[-2:] - ratings_json["min_rating"]) / (
         ratings_json["max_rating"] - ratings_json["min_rating"]
