@@ -17,7 +17,7 @@ on:
         description: 'Source directory(s) to use when running MyPy, isort and Pylint'
         required: false
         type: string
-        default: ./src ./tests
+        default: ./chess_eval ./tests
       skip_mypy:
         description: 'If set, MyPy will be skipped.'
         required: false
@@ -30,7 +30,7 @@ on:
         default: false
 
 env:
-  SOURCE_DIRS: ${{ inputs.source_dirs || './src' }}
+  SOURCE_DIRS: ${{ inputs.source_dirs || './chess_eval' }}
   DEFAULT_PYTHON_VERSIONS: '["3.11","3.12","3.13"]'
 
 jobs:
