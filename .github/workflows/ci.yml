@@ -3,9 +3,9 @@ name: 'Continuous Integration'
 on:
   push:
     branches:
-      - main
+      - master
   pull_request:
-    branches: [ 'main' ]
+    branches: [ 'master' ]
   workflow_call:
     inputs:
       python_versions:
