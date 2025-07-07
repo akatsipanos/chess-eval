@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .prediction {
+            margin-bottom: 10px;
+        }
+
+        .likelihood {
+            text-indent: 2em;
+        }
+
+        .chessboard {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Result</h1>
+    <div class="prediction">
+        <p>Prediction: {{ result }}</p>
+        <p>Likelihood:</p>
+        <p class="likelihood">{{ result_str | safe }}</p>
+    </div>
+    <div class="chessboard">
+        {{ svg_image | safe }}
+    </div>
+</body>
+</html>

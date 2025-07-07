@@ -1,0 +1,81 @@
+[project]
+name = "chess-eval"
+version = "0.1.0"
+description = "Chess evaluation calculator project"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "chess>=1.11.2",
+    "fastapi>=0.115.12",
+    "flask>=3.1.1",
+    "jinja2>=3.1.6",
+    "matplotlib>=3.10.3",
+    "mlflow>=2.22.0",
+    "numpy>=2.2.6",
+    "optuna>=4.3.0",
+    "python-multipart>=0.0.20",
+    "stockfish>=3.28.0",
+    "torch>=2.7.1",
+    "waitress>=3.0.2",
+]
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.29.5",
+    "mypy>=1.16.0",
+    "pandas-stubs>=2.2.3.250527",
+    "pytest>=8.4.0",
+    "ruff>=0.11.12",
+    "scipy-stubs>=1.15.3.0",
+    "types-cachetools>=6.0.0.20250525",
+    "types-cffi>=1.17.0.20250523",
+    "types-colorama>=0.4.15.20240311",
+    "types-decorator>=5.2.0.20250324",
+    "types-defusedxml>=0.7.0.20250516",
+    "types-docker>=7.1.0.20250523",
+    "types-greenlet>=3.2.0.20250417",
+    "types-markdown>=3.8.0.20250415",
+    "types-networkx>=3.5.0.20250531",
+    "types-openpyxl>=3.1.5.20250602",
+    "types-paramiko>=3.5.0.20250516",
+    "types-protobuf>=6.30.2.20250516",
+    "types-psycopg2>=2.9.21.20250516",
+    "types-pyasn1>=0.6.0.20250516",
+    "types-pygments>=2.19.0.20250516",
+    "types-pymysql>=1.1.0.20250516",
+    "types-pyopenssl>=24.1.0.20240722",
+    "types-pysftp>=0.2.17.20241117",
+    "types-python-dateutil>=2.9.0.20250516",
+    "types-pyyaml>=6.0.12.20250516",
+    "types-requests>=2.32.0.20250602",
+    "types-tabulate>=0.9.0.20241207",
+    "types-tensorflow>=2.18.0.20250516",
+    "types-tqdm>=4.67.0.20250516",
+]
+
+[tool.setuptools]
+packages = ["chess_eval"]
+
+[tool.uv]
+package = true
+
+[tool.mypy]
+python_version = '3.12'
+disallow_untyped_decorators = true
+disallow_untyped_defs = true
+disallow_any_generics = true
+local_partial_types = true
+check_untyped_defs = true
+
+warn_redundant_casts = true
+warn_unused_configs = true
+warn_unused_ignores = true
+warn_unreachable = true
+show_error_context = true
+show_error_codes = true
+warn_return_any = true
+strict_optional = true
+ignore_missing_imports = true
+
+[tool.bandit]
+exclude_dirs = ["tests"]
