@@ -22,6 +22,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "ipykernel>=6.29.5",
+    "isort>=6.0.1",
     "mypy>=1.16.0",
     "pandas-stubs>=2.2.3.250527",
     "pytest>=8.4.0",

@@ -10,7 +10,7 @@ from numpy.typing import NDArray
 from torch import Tensor
 
 from chess_eval.schemas import InputData
-from stockfish import Stockfish  # type: ignore
+from stockfish import Stockfish
 
 
 def create_input(input_data: InputData) -> Tensor:
@@ -105,7 +105,7 @@ def convert_fen_to_matrix(fen_string: str) -> NDArray[np.float64]:
     }
 
     # Initialize the matrix with zeros
-    matrix = [[0 for _ in range(8)] for _ in range(8)]
+    matrix = [[0.0 for _ in range(8)] for _ in range(8)]
 
     # Split FEN string into relevant parts
     fen_parts = fen_string.split()
@@ -121,7 +121,7 @@ def convert_fen_to_matrix(fen_string: str) -> NDArray[np.float64]:
                 file_index += int(char)
             else:
                 # Piece squares
-                matrix[rank][file_index] = piece_values[char]  # type: ignore
+                matrix[rank][file_index] = piece_values[char]
                 file_index += 1
 
     return np.array(matrix).flatten()

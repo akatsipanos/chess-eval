@@ -39,7 +39,7 @@ def predict() -> str:
         "turn": request.form["turn"],
     }
 
-    X = create_input(input_data)
+    X = create_input(input_data)  # type: ignore
 
     # Use the input in your machine learning model
     input_size = 70
