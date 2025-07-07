@@ -87,11 +87,11 @@ jobs:
       - name: Run Mypy
         if: ${{ inputs.skip_mypy != true && (success() || failure()) }}
         run: |
-          uv run mypy ${{ env.SOURCE_DIRS }}  --non-interactive
+          uv run mypy ${{ env.SOURCE_DIRS }}
       - name: Run isort
         if: success() || failure()
         run: |
-          uv run isort ${{ env.SOURCE_DIRS }}
+          uv run isort ${{ env.SOURCE_DIRS }} --check-only
       - name: Run unit tests
         if: success() || failure()
         run: |
@@ -100,7 +100,7 @@ jobs:
         if: success() || failure()
         run: |
           if [ -d "$(pwd)/tests/integration" ]; then uv run pytest "$(pwd)/tests/integration" || [ $? -eq 5 ]; fi
-      - name: Run Pylint
+      - name: Run Ruff
         if: ${{ inputs.skip_pylint != true && (success() || failure()) }}
         run: |
           uv run ruff check ${{ env.SOURCE_DIRS }}
