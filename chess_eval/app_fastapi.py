@@ -32,7 +32,6 @@ app.mount("/static", StaticFiles(directory=base_dir / "static"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 def home() -> FileResponse:
-    # return templates.TemplateResponse("index.html")  # ,{"request": request})
     return FileResponse("index.html")
 
 
@@ -84,5 +83,3 @@ async def predict(request: Request, data: Annotated[InputData, Form()]) -> HTMLR
 
 if __name__ == "__main__":
     uvicorn.run(app, host="localhost", port=8000)
-# waitress.serve(app, port=5000, host='localhost')
-# app.run()
