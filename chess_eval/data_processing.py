@@ -10,11 +10,11 @@ from typing import Any
 import chess
 import numpy as np
 from numpy.typing import NDArray
+from stockfish import Stockfish
 from yaml import safe_load
 
 from chess_eval.schemas import GameDict, MovesDict
 from chess_eval.utils import convert_fen_to_matrix, convert_time_str_to_seconds
-from stockfish import Stockfish
 
 logging.basicConfig(
     level=logging.INFO,

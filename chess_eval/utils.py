@@ -7,17 +7,17 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from numpy.typing import NDArray
+from stockfish import Stockfish
 from torch import Tensor
 
 from chess_eval.schemas import InputData
-from stockfish import Stockfish
 
 
 def create_input(input_data: InputData) -> Tensor:
     total_time = 120
     turn_map = {"white": 0, "black": 1}
 
-    sf = Stockfish(r"stockfish/stockfish-windows-x86-64-avx2.exe", depth=20)
+    sf = Stockfish(r"stockfish_/stockfish-windows-x86-64-avx2.exe", depth=20)
     fen = input_data.fen_number
     if not sf.is_fen_valid(fen):
         raise ValueError(f"Input must be a valid FEN - provided value is {fen}")
