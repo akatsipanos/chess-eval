@@ -82,6 +82,7 @@ jobs:
         if: ${{ inputs.skip_mypy != true && (success() || failure()) }}
         run: |
           uv run mypy ${{ env.SOURCE_DIRS }} --explicit-package-bases
+
       - name: Run isort
         if: success() || failure()
         run: |
