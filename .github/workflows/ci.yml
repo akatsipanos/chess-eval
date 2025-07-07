@@ -74,12 +74,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
           version: "0.7.11"
 
-      - name: Configure Git Authentication
-        run: |
-          export GITHUB_TOKEN="${{ secrets.GH_TOKEN }}"
-          git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "git@github.com:"
-          git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-
       - name: Install dependencies
         run: |
           uv sync --dev
@@ -87,7 +81,8 @@ jobs:
       - name: Run Mypy
         if: ${{ inputs.skip_mypy != true && (success() || failure()) }}
         run: |
-          uv run mypy ${{ env.SOURCE_DIRS }}
+          uv run mypy ${{ env.SOURCE_DIRS }} --explicit-package-bases
+
       - name: Run isort
         if: success() || failure()
         run: |
