@@ -37,7 +37,6 @@ def home() -> FileResponse:
 
 @app.post("/predict")
 async def predict(request: Request, data: Annotated[InputData, Form()]) -> HTMLResponse:
-    # Get user input from the forms
     logging.critical(data)
     X = create_input(data)
     # Use the input in your machine learning model
