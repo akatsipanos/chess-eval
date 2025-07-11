@@ -9,6 +9,7 @@ import mlflow
 import numpy as np
 import optuna
 import torch
+from constants import SCALING_PATH
 from torch.optim import Optimizer, lr_scheduler
 
 from chess_eval.networks import Network, Network_1h, Network_2h, Network_3h
@@ -44,7 +45,6 @@ class Tuning:
 
     train_data_path: Path
     val_data_path: Path
-    scaling_path: Path
     tuning_type: Literal["lr", "arch"]
     batch_size: int = 256
     epochs: int = 65
@@ -59,8 +59,8 @@ class Tuning:
             self.optimizer, step_size=15, gamma=0.8
         )
 
-        self.X_train, self.y_train = prep_data(self.train_data_path, self.scaling_path)
-        self.X_val, self.y_val = prep_data(self.val_data_path, self.scaling_path)
+        self.X_train, self.y_train = prep_data(self.train_data_path, SCALING_PATH)
+        self.X_val, self.y_val = prep_data(self.val_data_path, SCALING_PATH)
         self.input_size = len(self.X_train[0, :])
 
         if self.tuning_type == "lr":

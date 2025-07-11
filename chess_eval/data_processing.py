@@ -9,6 +9,7 @@ from typing import Any
 
 import chess
 import numpy as np
+from constants import BASE_DIR, SF_PATH
 from numpy.typing import NDArray
 from stockfish import Stockfish
 from yaml import safe_load
@@ -29,7 +30,6 @@ logging.basicConfig(
 # -
 @dataclass
 class DataProcessing:
-    sf_path: Path | str
     raw_data_path: Path
     output_dir: Path
     data_type: str
@@ -118,7 +118,7 @@ class DataProcessing:
         board = chess.Board()
         output = []
         # wrt, brt = total_time, total_time
-        sf = Stockfish(self.sf_path, depth=self.sf_depth)
+        sf = Stockfish(SF_PATH, depth=self.sf_depth)
 
         total_time = game["total_time"]
         wrt, brt = total_time, total_time
@@ -200,19 +200,17 @@ class DataProcessing:
 
 def main(config_name: str) -> None:
     logging.debug("initialising processing...")
-    base_dir = Path(__file__).parent.parent.resolve()
-    data_dir = base_dir / "data"
+    data_dir = BASE_DIR / "data"
     raw_data_dir = data_dir / "raw"
     output_data_dir = data_dir / "processed"
 
-    with open(base_dir / "config.yml") as config_file:
+    with open(BASE_DIR / "data_processing_config.yml") as config_file:
         config = safe_load(config_file)[config_name]
 
     data_type = config["data_type"]  # train / val / test
     proc_input = {
         "raw_data_path": raw_data_dir / data_type / config["raw_data_file_name"],
         "output_dir": output_data_dir / data_type,
-        "sf_path": base_dir / config["sf_path"],
         "sf_depth": config["sf_depth"],
         "verbose": 500,
     }

@@ -1,6 +1,5 @@
 # %%
 import random
-from pathlib import Path
 from typing import Any
 
 import matplotlib.pyplot as plt
@@ -8,6 +7,7 @@ import mlflow
 import numpy as np
 import optuna
 import torch
+from constants import BASE_DIR, SCALING_PATH
 from torch.optim import Optimizer, lr_scheduler
 
 from chess_eval.networks import Network
@@ -23,14 +23,12 @@ def main() -> None:
 
     device = torch.device("cpu")
 
-    base_dir = Path(__file__).parent.parent.resolve()
-    data_dir = base_dir / "data" / "processed"
+    data_dir = BASE_DIR / "data" / "processed"
     train_data_path = data_dir / "train" / "train.npy"
     val_data_path = data_dir / "val" / "val.npy"
-    scaling_path = Path(__file__).parent.resolve() / "scaling.json"
 
-    X_train, y_train = prep_data(train_data_path, scaling_path)
-    X_val, y_val = prep_data(val_data_path, scaling_path)
+    X_train, y_train = prep_data(train_data_path, SCALING_PATH)
+    X_val, y_val = prep_data(val_data_path, SCALING_PATH)
 
     input_size = len(X_train[0, :])
     output_layer1 = 32

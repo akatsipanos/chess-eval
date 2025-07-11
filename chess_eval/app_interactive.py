@@ -1,9 +1,9 @@
 import logging
-from pathlib import Path
 
 import chess
 import chess.svg
 import torch
+from constants import BASE_DIR, MODEL_PATH
 
 # import torch.nn as nn
 from flask import Flask, render_template, request
@@ -18,8 +18,7 @@ logging.basicConfig(
 )
 
 app = Flask(__name__)
-base_dir = Path(__file__).parent.parent.resolve()
-template_dir = base_dir / "templates"
+template_dir = BASE_DIR / "chess_eval" / "templates"
 
 
 @app.route("/")
@@ -46,7 +45,7 @@ def predict() -> str:
     output_layer1 = 32
     output_layer2 = 16
     model = Network(input_size, output_layer1, output_layer2)
-    model_state_dict = torch.load("models/chess_model.pt")  # nosec: CWE-502
+    model_state_dict = torch.load(MODEL_PATH)  # nosec: CWE-502
     model.load_state_dict(model_state_dict)
 
     X = X.unsqueeze(0)
