@@ -1,11 +1,11 @@
 # %%
 import argparse
-from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torch.nn as nn
+from constants import BASE_DIR, SCALING_PATH
 from torch import device
 from torch.optim import Optimizer, lr_scheduler
 
@@ -159,14 +159,9 @@ def main() -> None:
 
     device = torch.device("cpu")
 
-    base_dir = Path(__file__).parent.parent.resolve()
-    data_dir = base_dir / "data" / "processed"
-    X_train, y_train = prep_data(
-        data_dir / "train" / "train_d10.npy", Path(__file__).parent / "scaling.json"
-    )
-    X_val, y_val = prep_data(
-        data_dir / "val" / "val_d10.npy", Path(__file__).parent / "scaling.json"
-    )
+    data_dir = BASE_DIR / "data" / "processed"
+    X_train, y_train = prep_data(data_dir / "train" / "train_d10.npy", SCALING_PATH)
+    X_val, y_val = prep_data(data_dir / "val" / "val_d10.npy", SCALING_PATH)
 
     # model = Conv()
     input_size = 70
