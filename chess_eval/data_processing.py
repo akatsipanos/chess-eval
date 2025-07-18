@@ -176,9 +176,7 @@ class DataProcessing:
                 if i % self.verbose == 0 or i == self.row_count - 1:
                     logging.info("Processed %s rows", i)
         if save_data:
-            output_file_path = (
-                self.output_dir / f"{self.data_type}_d{self.sf_depth}.npy"
-            )
+            output_file_path = self.output_dir / f"{self.data_type}_d{self.sf_depth}.npy"
             np.save(file=output_file_path, arr=output_final)
         return output_final
 

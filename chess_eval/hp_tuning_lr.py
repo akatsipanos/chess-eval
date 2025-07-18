@@ -118,16 +118,16 @@ def main() -> None:
             plt.style.use("ggplot")
             fig, ax = plt.subplots()
             ax.plot(
-                np.arange(0, len(H["train_loss"])), H["train_loss"], label="train loss"
+                range(len(H["train_loss"])), H["train_loss"], label="train loss"
             )
-            ax.plot(np.arange(0, len(H["val_loss"])), H["val_loss"], label="val loss")
+            ax.plot(range(len(H["val_loss"])), H["val_loss"], label="val loss")
             ax.plot(
-                np.arange(0, len(H["train_accuracy"])),
+                range(len(H["train_accuracy"])),
                 H["train_accuracy"],
                 label="train accuracy",
             )
             ax.plot(
-                np.arange(0, len(H["val_accuracy"])),
+                range(len(H["val_accuracy"])),
                 H["val_accuracy"],
                 label="val accuracy",
             )
