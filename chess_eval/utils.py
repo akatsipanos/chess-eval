@@ -6,11 +6,11 @@ from pathlib import Path
 import numpy as np
 import torch
 import torch.nn.functional as F
-from constants import SCALING_PATH, SF_PATH
 from numpy.typing import NDArray
 from stockfish import Stockfish
 from torch import Tensor
 
+from chess_eval.constants import SCALING_PATH, SF_PATH
 from chess_eval.schemas import InputData
 
 
@@ -25,8 +25,8 @@ def create_input(input_data: InputData) -> Tensor:
 
     sf.set_fen_position(fen)
 
-    features = [
-        convert_fen_to_matrix(fen),
+    inner_array = convert_fen_to_matrix(fen)
+    remaining_elements = [
         float(input_data.white_time) / total_time,
         float(input_data.black_time) / total_time,
         sf.get_evaluation()["value"] / 100,
@@ -34,9 +34,7 @@ def create_input(input_data: InputData) -> Tensor:
         int(input_data.white_rating),
         int(input_data.black_rating),
     ]
-    inner_array = features[0]
-    remaining_elements = features[1:]
-    X_array: NDArray[np.float32] = np.array(list(inner_array) + remaining_elements)
+    X_array: NDArray[np.float32] = np.array(inner_array.tolist() + remaining_elements)
 
     with open(SCALING_PATH) as f:
         ratings_json = json.load(f)

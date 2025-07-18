@@ -9,11 +9,11 @@ from typing import Any
 
 import chess
 import numpy as np
-from constants import BASE_DIR, SF_PATH
 from numpy.typing import NDArray
 from stockfish import Stockfish
 from yaml import safe_load
 
+from chess_eval.constants import BASE_DIR, SF_PATH
 from chess_eval.schemas import GameDict, MovesDict
 from chess_eval.utils import convert_fen_to_matrix, convert_time_str_to_seconds
 
@@ -137,8 +137,8 @@ class DataProcessing:
                 fen = board.fen()  # Get the fen for the position
                 sf.set_fen_position(fen)  # For stockfish evaluation
 
-                features = [
-                    convert_fen_to_matrix(fen),
+                inner_array = convert_fen_to_matrix(fen)
+                remaining_elements = [
                     wrt / total_time,
                     brt / total_time,
                     sf.get_evaluation()["value"] / 100,
@@ -147,10 +147,8 @@ class DataProcessing:
                     game["ratings"][1],
                     game["result"],
                 ]
-                inner_array = features[0]
-                remaining_elements = features[1:]
-                final_array = np.array(list(inner_array) + remaining_elements)
-                output.append(final_array)
+                features = np.array(inner_array.tolist() + remaining_elements)
+                output.append(features)
 
                 board.push_san(move_dict["move"])  # type: ignore
 
@@ -191,9 +189,13 @@ class DataProcessing:
         """
         data = self.json_data
         if moves_to_skip:
-            for ind, game in enumerate(data):
-                game["moves"] = game["moves"][:moves_to_skip]
-                data[ind]["moves"] = game["moves"]
+            # for ind, game in enumerate(data):
+            # filtered_moves: list[MovesDict] = game["moves"][moves_to_skip:]
+            # game["moves"] = filtered_moves
+            # data[ind]["moves"] = game["moves"]
+            for game in data:
+                game.update({"moves": game["moves"][moves_to_skip:]})
+
         self.json_data = data
         self._count_rows()
 
@@ -208,14 +210,14 @@ def main(config_name: str) -> None:
         config = safe_load(config_file)[config_name]
 
     data_type = config["data_type"]  # train / val / test
-    proc_input = {
-        "raw_data_path": raw_data_dir / data_type / config["raw_data_file_name"],
-        "output_dir": output_data_dir / data_type,
-        "sf_depth": config["sf_depth"],
-        "verbose": 500,
-    }
-    processor = DataProcessing(**proc_input)
-    _ = processor.generatre_matrix()
+    raw_data_path = raw_data_dir / data_type / config["raw_data_file_name"]
+    processor = DataProcessing(
+        raw_data_path=raw_data_path,
+        output_dir=output_data_dir / data_type,
+        sf_depth=config["sf_depth"],
+        data_type=data_type,
+    )
+    _ = processor.generatre_matrix(save_data=False)
 
 
 if __name__ == "__main__":

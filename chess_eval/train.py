@@ -1,17 +1,25 @@
 # %%
 import argparse
+import logging
 
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import torch.nn as nn
-from constants import BASE_DIR, SCALING_PATH
 from torch import device
 from torch.optim import Optimizer, lr_scheduler
+from yaml import safe_load
 
+from chess_eval.constants import BASE_DIR, SCALING_PATH
 from chess_eval.networks import Network
-from chess_eval.schemas import CustomDataLoader, CustomDataset
+from chess_eval.schemas import CustomDataLoader, CustomDataset, TrainingParams
 from chess_eval.utils import prep_data
+
+logging.basicConfig(
+    level=logging.INFO,  # Set the minimum level of messages to show
+    format="%(asctime)s | %(levelname)8s | %(filename)s:%(lineno)d | %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
 
 
 def train(
@@ -52,10 +60,7 @@ def train(
                     \t({batch_idx * len(data)}/{len(X_train_dataloader.dataset)})"
                 )
 
-    # train_loss /= len(cast(Sized, X_train_dataloader.dataset))
-    # dataset: SizedDataset =
-
-    train_loss /= len(X_train_dataloader)  # .dataset)
+    train_loss /= len(X_train_dataloader)
     train_accuracy = correct / len(X_train_dataloader.dataset)
     print(
         f"Train set: \tAverage loss:\t{train_loss:.4f} \
@@ -91,79 +96,42 @@ def validate(
     return val_loss, val_accuracy
 
 
-def main() -> None:
-    try:
-        ap = argparse.ArgumentParser()
-        ap.add_argument(
-            "--epochs",
-            type=int,
-            default=14,
-            metavar="N",
-            help="number of epochs to train (default: 14)",
-        )
-        ap.add_argument(
-            "--lr",
-            type=float,
-            default=1.0,
-            metavar="LR",
-            help="learning rate (default: 1.0)",
-        )
-        ap.add_argument(
-            "--gamma",
-            type=float,
-            default=0.9,
-            metavar="M",
-            help="Learning rate step gamma (default: 0.7)",
-        )
-        ap.add_argument(
-            "--log-interval",
-            type=int,
-            default=1000,
-            metavar="N",
-            help="how many batches to wait before logging training status",
-        )
-        ap.add_argument(
-            "--scheduler",
-            type=str,
-            default="step",
-            metavar="S",
-            help="learning rate scheduler to use, step or exponential",
-        )
-        ap.add_argument(
-            "--batch-size",
-            type=int,
-            default=256,
-            metavar="N",
-            help="input batch size for training (default: 64)",
-        )
-        ap.add_argument(
-            "--save-model",
-            type=str,
-            default=False,
-            metavar="S",
-            help="For Saving the current Model",
-        )
-        ap.add_argument(
-            "--step-size", type=int, default=10, help="Step size for lr scheduler"
-        )
-        args = vars(ap.parse_args())
+def plot_graph(H: dict[str, list[float]], params: TrainingParams) -> None:
+    plt.style.use("ggplot")
+    plt.figure()
+    plt.plot(np.arange(0, len(H["train_loss"])), H["train_loss"], label="train loss")
+    plt.plot(np.arange(0, len(H["val_loss"])), H["val_loss"], label="val loss")
+    plt.plot(
+        np.arange(0, len(H["train_accuracy"])),
+        H["train_accuracy"],
+        label="train accuracy",
+    )
+    plt.plot(
+        np.arange(0, len(H["val_accuracy"])),
+        H["val_accuracy"],
+        label="val accuracy",
+    )
+    plt.title("Training and Validation Loss and Accuracy")
+    plt.xlabel("Epoch #")
+    plt.ylabel("Loss/Accuracy")
+    plt.legend()
+    plt.savefig(
+        BASE_DIR
+        / f"figures/epochs_{params['epochs']}__lr_{params['lr']}__gamma_{params['gamma']}__scheduler_{params['scheduler']}.png"
+    )
 
-    except SystemExit:
-        args = {
-            "epochs": 100,
-            "lr": 0.1,
-            "gamma": 0.1,
-            "log_interval": 10000,
-            "save_model": False,
-        }
 
+def main(config_name: str, save_model: bool, log_interval: int) -> None:
     device = torch.device("cpu")
+    config_path = BASE_DIR / "ml_config.yml"
+    with open(config_path, encoding="utf-8") as f:
+        config = safe_load(f)[config_name]
 
+    params = TrainingParams(**config)
     data_dir = BASE_DIR / "data" / "processed"
     X_train, y_train = prep_data(data_dir / "train" / "train_d10.npy", SCALING_PATH)
     X_val, y_val = prep_data(data_dir / "val" / "val_d10.npy", SCALING_PATH)
 
-    # model = Conv()
     input_size = 70
     output_layer1 = 32
     output_layer2 = 16
@@ -171,29 +139,29 @@ def main() -> None:
         input_size=input_size, output_layer1=output_layer1, output_layer2=output_layer2
     )
 
-    optimizer = torch.optim.SGD(model.parameters(), lr=args["lr"])
+    optimizer = torch.optim.SGD(model.parameters(), lr=params["lr"])
     criterion_train = nn.CrossEntropyLoss()
     criterion_test = nn.CrossEntropyLoss(reduction="sum")
 
     scheduler: lr_scheduler.LRScheduler
-    if args.get("scheduler", "") == "exponential":
-        scheduler = lr_scheduler.ExponentialLR(optimizer, gamma=args["gamma"])
+    if params.get("scheduler", "") == "exponential":
+        scheduler = lr_scheduler.ExponentialLR(optimizer, gamma=params["gamma"])
     else:
         scheduler = lr_scheduler.StepLR(
-            optimizer, step_size=args["step_size"], gamma=args["gamma"]
+            optimizer, step_size=params["step_size"], gamma=params["gamma"]
         )
 
     X_train_dataloader = CustomDataLoader(
-        CustomDataset(X_train[:, :]), batch_size=args["batch_size"]
+        CustomDataset(X_train[:, :]), batch_size=params["batch_size"]
     )
     y_train_dataloader = CustomDataLoader(
-        CustomDataset(y_train[:, :]), batch_size=args["batch_size"]
+        CustomDataset(y_train[:, :]), batch_size=params["batch_size"]
     )
     X_val_dataloader = CustomDataLoader(
-        CustomDataset(X_val[:, :]), batch_size=args["batch_size"]
+        CustomDataset(X_val[:, :]), batch_size=params["batch_size"]
     )
     y_val_dataloader = CustomDataLoader(
-        CustomDataset(y_val[:, :]), batch_size=args["batch_size"]
+        CustomDataset(y_val[:, :]), batch_size=params["batch_size"]
     )
 
     H: dict[str, list[float]] = {
@@ -202,7 +170,7 @@ def main() -> None:
         "train_accuracy": [],
         "val_accuracy": [],
     }
-    for epoch in range(1, args["epochs"] + 1):
+    for epoch in range(1, params["epochs"] + 1):
         print(f"Epoch: {epoch}")
         train_loss, train_accuracy = train(
             model,
@@ -213,7 +181,7 @@ def main() -> None:
             criterion_train,
             criterion_test,
             epoch,
-            args["log_interval"],
+            log_interval,
         )
         val_loss, val_accuracy = validate(
             model, device, X_val_dataloader, y_val_dataloader, criterion_test
@@ -227,34 +195,35 @@ def main() -> None:
         scheduler.step()
 
         if epoch % 5 == 0:
-            plt.style.use("ggplot")
-            plt.figure()
-            plt.plot(
-                np.arange(0, len(H["train_loss"])), H["train_loss"], label="train loss"
-            )
-            plt.plot(np.arange(0, len(H["val_loss"])), H["val_loss"], label="val loss")
-            plt.plot(
-                np.arange(0, len(H["train_accuracy"])),
-                H["train_accuracy"],
-                label="train accuracy",
-            )
-            plt.plot(
-                np.arange(0, len(H["val_accuracy"])),
-                H["val_accuracy"],
-                label="val accuracy",
-            )
-            plt.title("Training and Validation Loss and Accuracy")
-            plt.xlabel("Epoch #")
-            plt.ylabel("Loss/Accuracy")
-            plt.legend()
-            plt.savefig(
-                f"figures/epochs_{args['epochs']}__lr_{args['lr']}__gamma_{args['gamma']}__scheduler_{args['scheduler']}.png"
-            )
+            plot_graph(H, params)
 
-    if args["save_model"]:
-        torch.save(model.state_dict(), "models/chess_model.pt")  # nosec: CWE-502
+    if save_model:
+        models_dir = BASE_DIR / "models"
+        torch.save(model.state_dict(), models_dir / f"{config_name}_model.pt")  # nosec: CWE-502
 
 
 if __name__ == "__main__":
-    main()
-#  python train.py --epochs 65 --lr 0.1 --gamma 0.8 --schedular step --step-size 15# %%
+    parser = argparse.ArgumentParser(
+        description="The name of the configuration from the ml_config.yml file"
+    )
+    parser.add_argument(
+        "--config",
+        type=str,
+        default="test",
+        help="Navigate to ml_config.yml to choose your configuration and enter the name",
+    )
+    parser.add_argument(
+        "--log-interval",
+        type=int,
+        default=1000,
+        metavar="l",
+        help="how many batches to wait before logging training status",
+    )
+    parser.add_argument(
+        "--save-model",
+        action="store_true",
+        help="For Saving the current Model",
+    )
+
+    args = parser.parse_args()
+    main(args.config, args.save_model, args.log_interval)

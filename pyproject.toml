@@ -13,6 +13,7 @@ dependencies = [
     "mlflow>=2.22.0",
     "numpy>=2.2.6",
     "optuna>=4.3.0",
+    "pyrefly>=0.23.1",
     "python-multipart>=0.0.20",
     "stockfish>=3.28.0",
     "torch>=2.7.1",

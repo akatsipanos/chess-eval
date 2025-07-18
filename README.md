@@ -13,3 +13,5 @@
 - Write tests
 
 - Clean up - remove old tuning files if tuning class is a success; remove flask apps once completed the interactice fastapi-js one.
+
+- Add in pyrefly - mypy is too slow

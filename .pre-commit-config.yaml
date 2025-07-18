@@ -30,6 +30,11 @@ repos:
           [
             --explicit-package-bases
           ]
+  - repo: https://github.com/facebook/pyrefly
+    rev: 0.24.2
+    hooks:
+      - id: pyrefly-typecheck
+        entry: uv run pyrefly check
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:

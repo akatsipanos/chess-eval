@@ -6,12 +6,12 @@ import chess
 import chess.svg
 import torch
 import uvicorn
-from constants import BASE_DIR, MODEL_PATH
 from fastapi import FastAPI, Form, Request
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from chess_eval.constants import BASE_DIR, MODEL_PATH
 from chess_eval.networks import Network
 from chess_eval.schemas import InputData
 from chess_eval.utils import create_input

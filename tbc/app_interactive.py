@@ -3,11 +3,11 @@ import logging
 import chess
 import chess.svg
 import torch
-from constants import BASE_DIR, MODEL_PATH
 
 # import torch.nn as nn
 from flask import Flask, render_template, request
 
+from chess_eval.constants import BASE_DIR, MODEL_PATH
 from chess_eval.networks import Network
 from chess_eval.utils import create_input
 

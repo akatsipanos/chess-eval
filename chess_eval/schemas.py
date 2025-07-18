@@ -1,5 +1,5 @@
 from collections.abc import Iterator
-from typing import Any, TypedDict
+from typing import Any, Literal, TypedDict
 
 from pydantic import BaseModel
 from torch import Tensor
@@ -57,3 +57,20 @@ class InputData(BaseModel):
     white_rating: str
     black_rating: str
     turn: str
+
+
+class TrainingParams(TypedDict, total=False):
+    epochs: int
+    lr: float
+    gamma: float
+    scheduler: Literal["step", "exponential"]
+    batch_size: int
+    step_size: int
+    optimizer: Literal["SGD", "Adam"]
+
+
+class TuningParams(TrainingParams, total=False):
+    n_hidden: int
+    h1: int
+    h2: int
+    h3: int

@@ -7,9 +7,9 @@ import mlflow
 import numpy as np
 import optuna
 import torch
-from constants import BASE_DIR, SCALING_PATH
 from torch.optim import Optimizer, lr_scheduler
 
+from chess_eval.constants import BASE_DIR, SCALING_PATH
 from chess_eval.networks import Network
 from chess_eval.schemas import CustomDataLoader, CustomDataset
 from chess_eval.train import train, validate
