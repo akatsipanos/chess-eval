@@ -166,7 +166,7 @@ class DataProcessing:
         self._filter_by_moves(self.moves_to_skip)
         json_data = self.json_data
         rows = self.row_count
-        output_final: NDArray[Any] = np.ndarray((rows, 71))
+        output_final: NDArray[np.float64] = np.ndarray((rows, 71))
         i = 0
         for game in json_data:
             fen_list = self._create_rows(game)
