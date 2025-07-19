@@ -178,7 +178,7 @@ class DataProcessing:
             output_file_path = (
                 self.output_dir / f"{self.data_type}_d{self.sf_depth}.npy"
             )
-            np.save(file=output_file_path, arr=output_final)
+            np.save(file=output_file_path, arr=output_final) # type: ignore
         return output_final
 
     def _filter_by_moves(self, moves_to_skip: int) -> None:
