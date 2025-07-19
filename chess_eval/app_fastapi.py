@@ -1,6 +1,5 @@
 # WIP
 import logging
-from pathlib import Path
 from typing import Annotated
 
 import chess
@@ -12,6 +11,7 @@ from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from chess_eval.constants import BASE_DIR, MODEL_PATH
 from chess_eval.networks import Network
 from chess_eval.schemas import InputData
 from chess_eval.utils import create_input
@@ -25,9 +25,10 @@ logging.basicConfig(
 
 app = FastAPI()
 
-base_dir = Path(__file__).parent.resolve()
-templates = Jinja2Templates(directory=base_dir / "templates")
-app.mount("/static", StaticFiles(directory=base_dir / "static"), name="static")
+templates = Jinja2Templates(directory=BASE_DIR / "chess_eval" / "templates")
+app.mount(
+    "/static", StaticFiles(directory=BASE_DIR / "chess_eval" / "static"), name="static"
+)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -37,7 +38,6 @@ def home() -> FileResponse:
 
 @app.post("/predict")
 async def predict(request: Request, data: Annotated[InputData, Form()]) -> HTMLResponse:
-    # Get user input from the forms
     logging.critical(data)
     X = create_input(data)
     # Use the input in your machine learning model
@@ -48,7 +48,7 @@ async def predict(request: Request, data: Annotated[InputData, Form()]) -> HTMLR
         input_size=input_size, output_layer1=output_layer1, output_layer2=output_layer2
     )
 
-    model_state_dict = torch.load("models/chess_model.pt")  # nosec: CWE-502
+    model_state_dict = torch.load(MODEL_PATH)  # nosec: CWE-502
 
     model.load_state_dict(model_state_dict)
 

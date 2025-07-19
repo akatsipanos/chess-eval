@@ -1,8 +1,8 @@
 # WIP
 # type: ignore
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Literal, TypedDict
+from typing import Any, Literal, TypedDict
 
 import matplotlib.pyplot as plt
 import mlflow
@@ -11,27 +11,11 @@ import optuna
 import torch
 from torch.optim import Optimizer, lr_scheduler
 
+from chess_eval.constants import SCALING_PATH
 from chess_eval.networks import Network, Network_1h, Network_2h, Network_3h
-from chess_eval.schemas import CustomDataLoader, CustomDataset
+from chess_eval.schemas import CustomDataLoader, CustomDataset, TuningParams
 from chess_eval.train import train, validate
 from chess_eval.utils import prep_data
-
-
-class ArchitectureParams(TypedDict):
-    n_hidden: int
-    h1: int
-    h2: int
-    h3: int
-
-
-class LRParams(TypedDict):
-    epochs: int
-    lr: float
-    gamma: float
-    scheduler: Literal["step", "exponential"]
-    batch_size: int
-    step_size: int
-    optimizer: Literal["SGD", "Adam"]
 
 
 @dataclass
@@ -44,33 +28,38 @@ class Tuning:
 
     train_data_path: Path
     val_data_path: Path
-    scaling_path: Path
-    tuning_type: Literal["lr", "arch"]
+    tuning_type: Literal["Parameters", "Architecture"]
+    experiment_name: str
+    tracking_uri: str
+    n_trials: int = 20
     batch_size: int = 256
     epochs: int = 65
+    model: torch.nn.Module = field(init=False, default_factory=torch.nn.Module)
 
     def __post_init__(self):
         torch.manual_seed(123)
         np.random.seed(123)
-        self.device = torch.device("cpu")
+        self.device: Any = torch.device("cpu")
 
         self.optimizer: Optimizer = torch.optim.SGD(self.model.parameters(), lr=0.25)
         self.scheduler: lr_scheduler.LRScheduler = lr_scheduler.StepLR(
             self.optimizer, step_size=15, gamma=0.8
         )
 
-        self.X_train, self.y_train = prep_data(self.train_data_path, self.scaling_path)
-        self.X_val, self.y_val = prep_data(self.val_data_path, self.scaling_path)
+        self.X_train, self.y_train = prep_data(self.train_data_path, SCALING_PATH)
+        self.X_val, self.y_val = prep_data(self.val_data_path, SCALING_PATH)
         self.input_size = len(self.X_train[0, :])
 
-        if self.tuning_type == "lr":
+        if self.tuning_type == "Parameters":
             output_layer1 = 32
             output_layer2 = 16
 
             self.model = Network(self.input_size, output_layer1, output_layer2)
 
-    def _set_vals(self, params: LRParams | ArchitectureParams) -> tuple:
-        if self.tuning_type == "lr":
+    def _set_vals(self, params: TuningParams) -> None:
+        if not isinstance(params, TuningParams):
+            raise ValueError("Params must be of type TuningParameters when tuning")
+        if self.tuning_type == "Parameters":
             if params["optimizer"] == "SGD":
                 optimizer = torch.optim.SGD(self.model.parameters(), lr=params["lr"])
             else:
@@ -102,12 +91,12 @@ class Tuning:
                     self.input_size, neurons[0], neurons[1], neurons[2]
                 )
 
-    def run_trials(self, params: LRParams | ArchitectureParams):
+    def run_trials(self, params: TuningParams):
         def objective(trial: optuna.Trial) -> float:
             with mlflow.start_run():
                 mlflow.log_params(params)
 
-                self._set_vals(trial, params)
+                self._set_vals(params)
                 # scheduler, batch_size, epoch, optimiser = self._get_vals(params)
 
                 criterion_train = torch.nn.CrossEntropyLoss()

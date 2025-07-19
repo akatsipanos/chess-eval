@@ -5,16 +5,16 @@ import logging
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any
 
 import chess
 import numpy as np
 from numpy.typing import NDArray
+from stockfish import Stockfish
 from yaml import safe_load
 
+from chess_eval.constants import BASE_DIR, SF_PATH
 from chess_eval.schemas import GameDict, MovesDict
 from chess_eval.utils import convert_fen_to_matrix, convert_time_str_to_seconds
-from stockfish import Stockfish
 
 logging.basicConfig(
     level=logging.INFO,
@@ -29,7 +29,6 @@ logging.basicConfig(
 # -
 @dataclass
 class DataProcessing:
-    sf_path: Path | str
     raw_data_path: Path
     output_dir: Path
     data_type: str
@@ -118,7 +117,7 @@ class DataProcessing:
         board = chess.Board()
         output = []
         # wrt, brt = total_time, total_time
-        sf = Stockfish(self.sf_path, depth=self.sf_depth)
+        sf = Stockfish(SF_PATH, depth=self.sf_depth)
 
         total_time = game["total_time"]
         wrt, brt = total_time, total_time
@@ -137,8 +136,8 @@ class DataProcessing:
                 fen = board.fen()  # Get the fen for the position
                 sf.set_fen_position(fen)  # For stockfish evaluation
 
-                features = [
-                    convert_fen_to_matrix(fen),
+                inner_array = convert_fen_to_matrix(fen)
+                remaining_elements = [
                     wrt / total_time,
                     brt / total_time,
                     sf.get_evaluation()["value"] / 100,
@@ -147,10 +146,8 @@ class DataProcessing:
                     game["ratings"][1],
                     game["result"],
                 ]
-                inner_array = features[0]
-                remaining_elements = features[1:]
-                final_array = np.array(list(inner_array) + remaining_elements)
-                output.append(final_array)
+                features = np.array(inner_array.tolist() + remaining_elements)
+                output.append(features)
 
                 board.push_san(move_dict["move"])  # type: ignore
 
@@ -168,7 +165,7 @@ class DataProcessing:
         self._filter_by_moves(self.moves_to_skip)
         json_data = self.json_data
         rows = self.row_count
-        output_final: NDArray[Any] = np.ndarray((rows, 71))
+        output_final: NDArray[np.float64] = np.ndarray((rows, 71))
         i = 0
         for game in json_data:
             fen_list = self._create_rows(game)
@@ -181,7 +178,7 @@ class DataProcessing:
             output_file_path = (
                 self.output_dir / f"{self.data_type}_d{self.sf_depth}.npy"
             )
-            np.save(file=output_file_path, arr=output_final)
+            np.save(file=output_file_path, arr=output_final) # type: ignore
         return output_final
 
     def _filter_by_moves(self, moves_to_skip: int) -> None:
@@ -191,33 +188,36 @@ class DataProcessing:
         """
         data = self.json_data
         if moves_to_skip:
-            for ind, game in enumerate(data):
-                game["moves"] = game["moves"][:moves_to_skip]
-                data[ind]["moves"] = game["moves"]
+            # for ind, game in enumerate(data):
+            # filtered_moves: list[MovesDict] = game["moves"][moves_to_skip:]
+            # game["moves"] = filtered_moves
+            # data[ind]["moves"] = game["moves"]
+            for game in data:
+                game.update({"moves": game["moves"][moves_to_skip:]})
+
         self.json_data = data
         self._count_rows()
 
 
 def main(config_name: str) -> None:
     logging.debug("initialising processing...")
-    base_dir = Path(__file__).parent.parent.resolve()
-    data_dir = base_dir / "data"
+    data_dir = BASE_DIR / "data"
     raw_data_dir = data_dir / "raw"
     output_data_dir = data_dir / "processed"
 
-    with open(base_dir / "config.yml") as config_file:
+    with open(BASE_DIR / "data_processing_config.yml") as config_file:
         config = safe_load(config_file)[config_name]
 
-    data_type = config["data_type"]  # train / val / test
-    proc_input = {
-        "raw_data_path": raw_data_dir / data_type / config["raw_data_file_name"],
-        "output_dir": output_data_dir / data_type,
-        "sf_path": base_dir / config["sf_path"],
-        "sf_depth": config["sf_depth"],
-        "verbose": 500,
-    }
-    processor = DataProcessing(**proc_input)
-    _ = processor.generatre_matrix()
+    data_type: str = config["data_type"]  # train / val / test
+    raw_data_file_name: str = config["raw_data_file_name"]
+    raw_data_path = raw_data_dir / data_type / raw_data_file_name
+    processor = DataProcessing(
+        raw_data_path=raw_data_path,
+        output_dir=output_data_dir / data_type,
+        sf_depth=config["sf_depth"],
+        data_type=data_type,
+    )
+    _ = processor.generatre_matrix(save_data=False)
 
 
 if __name__ == "__main__":
@@ -236,5 +236,7 @@ if __name__ == "__main__":
         config = "windows"
     main(config)
 
+
+# %%
 
 # %%

@@ -1,6 +1,5 @@
 # %%
 import random
-from pathlib import Path
 from typing import Any
 
 import matplotlib.pyplot as plt
@@ -10,6 +9,7 @@ import optuna
 import torch
 from torch.optim import Optimizer, lr_scheduler
 
+from chess_eval.constants import BASE_DIR, SCALING_PATH
 from chess_eval.networks import Network
 from chess_eval.schemas import CustomDataLoader, CustomDataset
 from chess_eval.train import train, validate
@@ -23,14 +23,12 @@ def main() -> None:
 
     device = torch.device("cpu")
 
-    base_dir = Path(__file__).parent.parent.resolve()
-    data_dir = base_dir / "data" / "processed"
+    data_dir = BASE_DIR / "data" / "processed"
     train_data_path = data_dir / "train" / "train.npy"
     val_data_path = data_dir / "val" / "val.npy"
-    scaling_path = Path(__file__).parent.resolve() / "scaling.json"
 
-    X_train, y_train = prep_data(train_data_path, scaling_path)
-    X_val, y_val = prep_data(val_data_path, scaling_path)
+    X_train, y_train = prep_data(train_data_path, SCALING_PATH)
+    X_val, y_val = prep_data(val_data_path, SCALING_PATH)
 
     input_size = len(X_train[0, :])
     output_layer1 = 32
@@ -120,16 +118,16 @@ def main() -> None:
             plt.style.use("ggplot")
             fig, ax = plt.subplots()
             ax.plot(
-                np.arange(0, len(H["train_loss"])), H["train_loss"], label="train loss"
+                range(len(H["train_loss"])), H["train_loss"], label="train loss"
             )
-            ax.plot(np.arange(0, len(H["val_loss"])), H["val_loss"], label="val loss")
+            ax.plot(range(len(H["val_loss"])), H["val_loss"], label="val loss")
             ax.plot(
-                np.arange(0, len(H["train_accuracy"])),
+                range(len(H["train_accuracy"])),
                 H["train_accuracy"],
                 label="train accuracy",
             )
             ax.plot(
-                np.arange(0, len(H["val_accuracy"])),
+                range(len(H["val_accuracy"])),
                 H["val_accuracy"],
                 label="val accuracy",
             )

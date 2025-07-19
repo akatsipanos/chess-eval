@@ -1,5 +1,4 @@
 import logging
-from pathlib import Path
 
 import chess
 import chess.svg
@@ -8,6 +7,7 @@ import torch
 # import torch.nn as nn
 from flask import Flask, render_template, request
 
+from chess_eval.constants import BASE_DIR, MODEL_PATH
 from chess_eval.networks import Network
 from chess_eval.utils import create_input
 
@@ -18,8 +18,7 @@ logging.basicConfig(
 )
 
 app = Flask(__name__)
-base_dir = Path(__file__).parent.parent.resolve()
-template_dir = base_dir / "templates"
+template_dir = BASE_DIR / "chess_eval" / "templates"
 
 
 @app.route("/")
@@ -39,14 +38,14 @@ def predict() -> str:
         "turn": request.form["turn"],
     }
 
-    X = create_input(input_data)
+    X = create_input(input_data)  # type: ignore
 
     # Use the input in your machine learning model
     input_size = 70
     output_layer1 = 32
     output_layer2 = 16
     model = Network(input_size, output_layer1, output_layer2)
-    model_state_dict = torch.load("models/chess_model.pt")  # nosec: CWE-502
+    model_state_dict = torch.load(MODEL_PATH)  # nosec: CWE-502
     model.load_state_dict(model_state_dict)
 
     X = X.unsqueeze(0)

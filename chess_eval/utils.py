@@ -7,25 +7,26 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 from numpy.typing import NDArray
+from stockfish import Stockfish
 from torch import Tensor
 
+from chess_eval.constants import SCALING_PATH, SF_PATH
 from chess_eval.schemas import InputData
-from stockfish import Stockfish  # type: ignore
 
 
 def create_input(input_data: InputData) -> Tensor:
     total_time = 120
     turn_map = {"white": 0, "black": 1}
 
-    sf = Stockfish(r"stockfish/stockfish-windows-x86-64-avx2.exe", depth=20)
+    sf = Stockfish(SF_PATH, depth=20)
     fen = input_data.fen_number
     if not sf.is_fen_valid(fen):
         raise ValueError(f"Input must be a valid FEN - provided value is {fen}")
 
     sf.set_fen_position(fen)
 
-    features = [
-        convert_fen_to_matrix(fen),
+    inner_array = convert_fen_to_matrix(fen)
+    remaining_elements = [
         float(input_data.white_time) / total_time,
         float(input_data.black_time) / total_time,
         sf.get_evaluation()["value"] / 100,
@@ -33,11 +34,9 @@ def create_input(input_data: InputData) -> Tensor:
         int(input_data.white_rating),
         int(input_data.black_rating),
     ]
-    inner_array = features[0]
-    remaining_elements = features[1:]
-    X_array: NDArray[np.float32] = np.array(list(inner_array) + remaining_elements)
+    X_array: NDArray[np.float32] = np.array(inner_array.tolist() + remaining_elements)
 
-    with open("models/scaling.json") as f:
+    with open(SCALING_PATH) as f:
         ratings_json = json.load(f)
     X_array[-2:] = (X_array[-2:] - ratings_json["min_rating"]) / (
         ratings_json["max_rating"] - ratings_json["min_rating"]
@@ -105,7 +104,7 @@ def convert_fen_to_matrix(fen_string: str) -> NDArray[np.float64]:
     }
 
     # Initialize the matrix with zeros
-    matrix = [[0 for _ in range(8)] for _ in range(8)]
+    matrix = [[0.0 for _ in range(8)] for _ in range(8)]
 
     # Split FEN string into relevant parts
     fen_parts = fen_string.split()
@@ -121,7 +120,7 @@ def convert_fen_to_matrix(fen_string: str) -> NDArray[np.float64]:
                 file_index += int(char)
             else:
                 # Piece squares
-                matrix[rank][file_index] = piece_values[char]  # type: ignore
+                matrix[rank][file_index] = piece_values[char]
                 file_index += 1
 
     return np.array(matrix).flatten()

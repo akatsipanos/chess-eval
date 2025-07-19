@@ -22,8 +22,11 @@ dependencies = [
 [dependency-groups]
 dev = [
     "ipykernel>=6.29.5",
+    "isort>=6.0.1",
     "mypy>=1.16.0",
     "pandas-stubs>=2.2.3.250527",
+    "pre-commit>=4.2.0",
+    "pyrefly==0.24.2",
     "pytest>=8.4.0",
     "ruff>=0.11.12",
     "scipy-stubs>=1.15.3.0",
@@ -69,7 +72,6 @@ check_untyped_defs = true
 
 warn_redundant_casts = true
 warn_unused_configs = true
-warn_unused_ignores = true
 warn_unreachable = true
 show_error_context = true
 show_error_codes = true
