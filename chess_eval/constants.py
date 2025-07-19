@@ -10,5 +10,7 @@ if sys.platform == "win32":
     SF_PATH = BASE_DIR / "stockfish_/stockfish-windows-x86-64-avx2.exe"
 elif sys.platform == "linux":
     SF_PATH = BASE_DIR / ""
+elif sys.platform == "darwin":
+    SF_PATH = BASE_DIR / "stockfish_/..."
 else:
     raise OSError("No specified path for stockfish for this system")
