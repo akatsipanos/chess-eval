@@ -207,8 +207,9 @@ def main(config_name: str) -> None:
     with open(BASE_DIR / "data_processing_config.yml") as config_file:
         config = safe_load(config_file)[config_name]
 
-    data_type = config["data_type"]  # train / val / test
-    raw_data_path = raw_data_dir / data_type / config["raw_data_file_name"]
+    data_type: str = config["data_type"]  # train / val / test
+    raw_data_file_name: str = config["raw_data_file_name"]
+    raw_data_path = raw_data_dir / data_type / raw_data_file_name
     processor = DataProcessing(
         raw_data_path=raw_data_path,
         output_dir=output_data_dir / data_type,
