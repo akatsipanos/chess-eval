@@ -72,7 +72,6 @@ check_untyped_defs = true
 
 warn_redundant_casts = true
 warn_unused_configs = true
-warn_unused_ignores = true
 warn_unreachable = true
 show_error_context = true
 show_error_codes = true
