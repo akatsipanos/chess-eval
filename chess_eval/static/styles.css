@@ -1,0 +1,82 @@
+body {
+    font-family: Arial, sans-serif;
+    margin-top: 10px;
+    background-color: rgb(207, 218, 201);
+    justify-content: center;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+    justify-content: center;
+    /* margin-bottom: 10px; */
+    text-align: center;
+}
+
+form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* .prediction {
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+*/
+.likelihood {
+    text-indent: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    white-space: pre-line;
+} 
+.results {
+    display: flex;
+    gap: 100px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 2px;
+}
+
+.chessboard {
+    /* margin-top: 20px; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* max-width: 150%; */
+    height: auto;
+    /* width: clamp(2000px, 40vw, 500px); */
+}
+
+.image {
+    height: auto;
+    /* width: clamp(200px, 40vw, 500px); */
+}

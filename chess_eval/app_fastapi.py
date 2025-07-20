@@ -33,7 +33,7 @@ app.mount(
 
 @app.get("/", response_class=HTMLResponse)
 def home() -> FileResponse:
-    return FileResponse("index.html")
+    return FileResponse(BASE_DIR / "chess_eval" / "templates" / "index.html")
 
 
 @app.post("/predict")
@@ -62,7 +62,8 @@ async def predict(request: Request, data: Annotated[InputData, Form()]) -> HTMLR
 
     result_map = {"0": "White win", "1": "Draw", "2": "Black win"}
     result = result_map[str(pred)]
-    result_str = f"White win - {y_pred[0][0].item() * 100:.2f}% Draw - {y_pred[0][1].item() * 100:.2f}% Black win - {y_pred[0][2].item() * 100:.2f}%"
+    # result_str = f"White win - {y_pred[0][0].item() * 100:.2f}%\nDraw - {y_pred[0][1].item() * 100:.2f}%\nBlack win - {y_pred[0][2].item() * 100:.2f}%"
+    result_str = f"{'White win':<12} - {y_pred[0][0].item() * 100:>6.2f}%\n{'Draw':<12} - {y_pred[0][1].item() * 100:>6.2f}%\n{'Black win':<12} - {y_pred[0][2].item() * 100:>6.2f}%"
 
     print(result_str)
 
@@ -81,5 +82,5 @@ async def predict(request: Request, data: Annotated[InputData, Form()]) -> HTMLR
     )
 
 
-if __name__ == "__main__":
-    uvicorn.run(app, host="localhost", port=8000)
+# if __name__ == "__main__":
+    # uvicorn.run(app, host="localhost", port=8000)
