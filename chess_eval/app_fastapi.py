@@ -5,7 +5,6 @@ from typing import Annotated
 import chess
 import chess.svg
 import torch
-import uvicorn
 from fastapi import FastAPI, Form, Request
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -40,6 +39,8 @@ def home() -> FileResponse:
 async def predict(request: Request, data: Annotated[InputData, Form()]) -> HTMLResponse:
     logging.critical(data)
     X = create_input(data)
+    sf_eval = round(float(X[-4]), 2)
+    logging.info("Stockfish Evaluation - %s", sf_eval)
     # Use the input in your machine learning model
     input_size = 70
     output_layer1 = 32
@@ -70,7 +71,8 @@ async def predict(request: Request, data: Annotated[InputData, Form()]) -> HTMLR
     board = chess.Board()
     board.set_fen(data.fen_number)
     image = chess.svg.board(board, size=400)
-
+    # print(y_pred.tolist())
+    list_y_pred = [round(i, 3) for i in y_pred.tolist()[0]]
     return templates.TemplateResponse(
         "results.html",
         {
@@ -78,9 +80,11 @@ async def predict(request: Request, data: Annotated[InputData, Form()]) -> HTMLR
             "result": result,
             "result_str": result_str,
             "svg_image": image,
+            "sf_eval": sf_eval,
+            "y_pred": list_y_pred,
         },
     )
 
 
 # if __name__ == "__main__":
-    # uvicorn.run(app, host="localhost", port=8000)
+# uvicorn.run(app, host="localhost", port=8000)

@@ -8,25 +8,19 @@
     <h1>Result</h1>
     <div class="results">
         <div class="prediction">
-        <!-- <p> -->
         <strong>Prediction</strong><br>{{ result }}
-        <!-- </p> -->
         </div>
-    <!-- </div> -->
-    <!-- <div class="likelihood"> -->
         <div class="likelihood">
-        <p>
-        <strong>Likelihood</strong><br>{{ result_str }}
-        </p>
+        <p><strong>Likelihood</strong><br>{{ result_str }}</p>
         </div>
     </div>
     <div class="chessboard">
         <div class="image">
             {{ svg_image | safe }}
         </div>
-        <!-- <div class="eval-bar">
-            
-        </div> -->
+        <div class="eval-bar">
+           {{ sf_eval }} {{ y_pred }}
+        </div>
     </div>
 </body>
 </html>

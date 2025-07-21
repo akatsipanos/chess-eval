@@ -55,7 +55,8 @@ input[type="submit"]:hover {
     justify-content: center;
     align-items: center;
     white-space: pre-line;
-} 
+    text-align: center;
+}
 .results {
     display: flex;
     gap: 100px;
