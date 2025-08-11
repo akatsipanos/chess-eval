@@ -4,6 +4,7 @@ body {
     background-color: rgb(207, 218, 201);
     justify-content: center;
     align-items: center;
+    height: 100%;
 }
 
 h1 {
@@ -73,11 +74,27 @@ input[type="submit"]:hover {
     justify-content: center;
     align-items: center;
     /* max-width: 150%; */
-    height: auto;
+    height: 50vh;
+    gap: 10px;
     /* width: clamp(2000px, 40vw, 500px); */
 }
 
-.image {
-    height: auto;
+img {
+    /* object-fit: fill; */
+    height: 100%;
+    /* width: auto; */
+
     /* width: clamp(200px, 40vw, 500px); */
+}
+
+.bar {
+    height: 100%;
+    background-color: white;
+    margin-left: 10px;
+}
+
+.sf_eval_bar {
+    height: 90%;
+    background-color: black;
+    color: white;
 }
