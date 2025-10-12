@@ -6,6 +6,7 @@ import chess
 import chess.svg
 import torch
 from fastapi import FastAPI, Form, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -21,8 +22,21 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
-
 app = FastAPI()
+
+# Allow local dev frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 templates = Jinja2Templates(directory=BASE_DIR / "chess_eval" / "templates")
 app.mount(
@@ -84,6 +98,49 @@ async def predict(request: Request, data: Annotated[InputData, Form()]) -> HTMLR
             "y_pred": list_y_pred,
         },
     )
+
+
+# Lightweight JSON API for frontend consumption
+_model_cached: Network | None = None
+
+
+def _get_model() -> Network:
+    global _model_cached
+    if _model_cached is None:
+        input_size = 70
+        output_layer1 = 32
+        output_layer2 = 16
+        model = Network(
+            input_size=input_size,
+            output_layer1=output_layer1,
+            output_layer2=output_layer2,
+        )
+        state = torch.load(MODEL_PATH)  # nosec: CWE-502
+        model.load_state_dict(state)
+        model.eval()
+        _model_cached = model
+    return _model_cached
+
+
+@app.post("/api/predict")
+async def api_predict(data: InputData) -> dict:
+    X = create_input(data)
+    sf_eval = round(float(X[-4]), 2)
+
+    model = _get_model()
+    with torch.no_grad():
+        y_pred = model(X.unsqueeze(0))
+        pred = int(y_pred.argmax().item())
+
+    result_map = {0: "White win", 1: "Draw", 2: "Black win"}
+    result = result_map[pred]
+    probs = [float(round(v, 6)) for v in y_pred.squeeze(0).tolist()]
+    return {
+        "result": result,
+        "probs": probs,
+        "sf_eval": float(sf_eval),
+        "fen": data.fen_number,
+    }
 
 
 # if __name__ == "__main__":
