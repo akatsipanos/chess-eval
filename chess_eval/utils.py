@@ -26,10 +26,12 @@ def create_input(input_data: InputData) -> Tensor:
     sf.set_fen_position(fen)
 
     inner_array = convert_fen_to_matrix(fen)
+    sf_eval = sf.get_evaluation()["value"] / 100
+    logging.info("Stockfish Evaluation - %s", sf_eval)
     remaining_elements = [
         float(input_data.white_time) / total_time,
         float(input_data.black_time) / total_time,
-        sf.get_evaluation()["value"] / 100,
+        sf_eval,
         turn_map[input_data.turn.lower()],
         int(input_data.white_rating),
         int(input_data.black_rating),

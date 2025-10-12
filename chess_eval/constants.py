@@ -11,6 +11,6 @@ if sys.platform == "win32":
 elif sys.platform == "linux":
     SF_PATH = BASE_DIR / ""
 elif sys.platform == "darwin":
-    SF_PATH = BASE_DIR / "stockfish_/..."
+    SF_PATH = BASE_DIR / "stockfish_/stockfish-macos-m1-apple-silicon"
 else:
     raise OSError("No specified path for stockfish for this system")

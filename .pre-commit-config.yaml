@@ -34,7 +34,7 @@ repos:
     rev: 0.24.2
     hooks:
       - id: pyrefly-typecheck
-        entry: uv run pyrefly check
+        entry: uv run pyrefly check chess_eval/
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:
