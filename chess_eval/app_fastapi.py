@@ -39,6 +39,7 @@ app.add_middleware(
 )
 
 templates = Jinja2Templates(directory=BASE_DIR / "chess_eval" / "templates")
+
 app.mount(
     "/static", StaticFiles(directory=BASE_DIR / "chess_eval" / "static"), name="static"
 )

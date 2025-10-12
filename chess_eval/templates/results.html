@@ -3,6 +3,16 @@
 <head>
     <title>Result</title>
     <link rel="stylesheet" href="static/styles.css">
+    <style>
+        :root {
+        --eval-bar: {{eval_bar}}%;
+        }
+
+        .sf_eval_bar {
+            height: calc(50% - var(--eval-bar));
+        }
+
+    </style>
 </head>
 <body>
     <h1>Result</h1>
@@ -15,11 +25,14 @@
         </div>
     </div>
     <div class="chessboard">
-        <div class="image">
+        <img class="image">
             {{ svg_image | safe }}
+        </img>
+        <div class="bar">
+             <div class="sf_eval_bar">{{ sf_eval }}</div>
         </div>
-        <div class="eval-bar">
-           {{ sf_eval }} {{ y_pred }}
+        <div class="bar">
+             <div class="pred_eval_bar">{{ y_pred }}</div>
         </div>
     </div>
 </body>
