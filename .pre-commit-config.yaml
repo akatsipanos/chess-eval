@@ -25,7 +25,7 @@ repos:
     rev: v1.11.2
     hooks:
       - id: mypy
-        entry: uv run mypy
+        entry: python scripts/mypy_with_stub_sync.py
         args:
           [
             --explicit-package-bases
